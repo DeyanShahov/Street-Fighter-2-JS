@@ -1,5 +1,9 @@
-const backgroundKen = document.querySelector('img[alt="BackgroundKen"]');  
+export class Stage {
+    constructor() {
+        this.image = document.querySelector('img[alt="BackgroundKen"]');  
+    }
 
-export function drawBackgroundKen(context) {
-    context.drawImage(backgroundKen, 0, 0);
+    draw(context){
+        context.drawImage(this.image, 0, 0);
+    }
 }

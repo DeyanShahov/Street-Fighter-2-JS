@@ -1,6 +1,6 @@
-import { drawKen, updateKen } from './Ken.js';
-import { drawBackgroundKen } from './stage.js';
-import { drawRyu, updateRyu} from './Ryu.js';
+import { Ken } from './Ken.js';
+import { Ryu } from './Ryu.js';
+import { Stage } from './Stage.js';
 
 const GameViewport = {
     WIDTH: 384,
@@ -14,15 +14,19 @@ window.onload = function(){
     canvasEL.width = GameViewport.WIDTH;
     canvasEL.height = GameViewport.HEIGHT;
 
+    const ken = new Ken(80, 110, 2);
+    const ryu = new Ryu(80, 110, -2);
+    const stage = new Stage();
+
     function frame() {
         
-        updateKen(context);
-        updateRyu(context);
+        ken.update(context);
+        ryu.update(context);
         
-        drawBackgroundKen(context);
+        stage.draw(context);
 
-        drawKen(context);
-        drawRyu(context);
+        ken.draw(context);
+        ryu.draw(context);
 
         window.requestAnimationFrame(frame);
     }

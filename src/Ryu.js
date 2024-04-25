@@ -1,21 +1,9 @@
-const ryu = document.querySelector('img[alt="Ryu"]');
+import { Fighter } from './fighter.js';
 
-const position = {
-    // x: GameViewport.WIDTH /2 - ken.width / 2,
-    x: 80,
-    y: 110,
-};
+export class Ryu extends Fighter {
+    constructor(x, y, velosity) {
+        super('Ryu', x, y, velosity);
 
-let velosity = -2;
-
-export function updateRyu(context) {
-    position.x += velosity;
-
-    if(position.x > context.canvas.width - ryu.width || position.x < 0) {
-        velosity = -velosity;
+        this.image = document.querySelector('img[alt="Ryu"]');
     }
-}
-
-export function drawRyu(context) {
-    context.drawImage(ryu, position.x, position.y);
 }
