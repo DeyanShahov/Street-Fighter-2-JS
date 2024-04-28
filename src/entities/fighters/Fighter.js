@@ -13,6 +13,10 @@ export class Fighter {
         this.animations = {};
         
         this.states = {
+            [FighterState.IDLE]: {
+                init: this.handleWalkIdleInit.bind(this),
+                update: this.handleWalkIdleState.bind(this),
+            },
             [FighterState.WALK_FORWARD]: {
                 init: this.handleWalkForwardInit.bind(this),
                 update: this.handleWalkForwardState.bind(this),
@@ -23,7 +27,7 @@ export class Fighter {
             },
         }
         
-        this.changeState(FighterState.WALK_BACKWARD);
+        this.changeState(FighterState.IDLE);
     }
 
     changeState(newState) {
@@ -31,6 +35,14 @@ export class Fighter {
         this.animationFrame = 0;
 
         this.states[this.curentState].init();
+    }
+
+    handleWalkIdleInit() {
+        this.velocity = 0;
+    }
+
+    handleWalkIdleState() {
+
     }
 
     handleWalkForwardInit() {
