@@ -77,7 +77,7 @@ export class Ryu extends Fighter {
             [FighterState.CROUCH]: [
                 ['crouch-3', 0]
             ],
-            [FighterState.CROUSCH_DOWN]: [
+            [FighterState.CROUCH_DOWN]: [
                 ['crouch-1', 30], ['crouch-2', 30], ['crouch-3', 30], ['crouch-3', -2], 
             ],
             [FighterState.CROUCH_UP]: [
