@@ -1,20 +1,20 @@
 import { StreetFighterGame } from './StreetFighterGame.js';
-import { FighterState } from './constants/fighters.js';
+//import { FighterState } from './constants/fighters.js';
 
-function populateMoveDropdown() {
-    const dropdown = document.getElementById('state-dropdown');
+// function populateMoveDropdown() {
+//     const dropdown = document.getElementById('state-dropdown');
 
-    Object.entries(FighterState).forEach(([, value]) => {
-        const option = document.createElement('option');
-        option.setAttribute('value', value);
-        option.innerText = value;
-        dropdown.appendChild(option);
-    }); 
-}
+//     Object.entries(FighterState).forEach(([, value]) => {
+//         const option = document.createElement('option');
+//         option.setAttribute('value', value);
+//         option.innerText = value;
+//         dropdown.appendChild(option);
+//     }); 
+// }
 
 
 window.addEventListener('load', function() {
-    populateMoveDropdown();
+    //populateMoveDropdown();
 
     new StreetFighterGame().start();
 });

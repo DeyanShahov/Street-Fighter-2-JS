@@ -2,8 +2,8 @@ import { FighterState } from '../../constants/fighters.js';
 import { Fighter } from './Fighter.js';
 
 export class Ryu extends Fighter {
-    constructor(x, y, velosity) {
-        super('Ryu', x, y, velosity);
+    constructor(x, y, direction, playerId) {
+        super('Ryu', x, y, direction, playerId);
 
         this.image = document.querySelector('img[alt="Ryu"]');
 
