@@ -1,5 +1,5 @@
 import * as control from '../../InputHandler.js';
-import { FighterState } from '../../constants/fighters.js';
+import { FighterDirection, FighterState } from '../../constants/fighters.js';
 import { STAGE_FLOOR } from '../../constants/stage.js';
 
 
@@ -21,6 +21,8 @@ export class Fighter {
         
         this.image = new Image();
 
+        this.opponent;
+
         this.states = {
             [FighterState.IDLE]: {
                 init: this.handleIdleInit.bind(this),
@@ -28,7 +30,7 @@ export class Fighter {
                 validFrom: [
                     FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD,
                     FighterState.JUMP_UP, FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD,
-                    FighterState.CROUCH_DOWN, FighterState.JUMP_LAND
+                    FighterState.CROUCH_DOWN, FighterState.JUMP_LAND, FighterState.IDLE_TURN,
                 ],
             },
             [FighterState.WALK_FORWARD]: {
@@ -84,7 +86,7 @@ export class Fighter {
             [FighterState.CROUCH]: {
                 init: () => { },
                 update: this.handleCrouchState.bind(this),
-                validFrom: [FighterState.CROUCH_DOWN],
+                validFrom: [FighterState.CROUCH_DOWN, FighterState.CROUCH_TURN],
             },
             [FighterState.CROUCH_DOWN]: {
                 init: this.handleCrouchDownInit.bind(this),
@@ -96,10 +98,25 @@ export class Fighter {
                 update: this.handleCrouchUpState.bind(this),
                 validFrom: [FighterState.CROUCH],
             },
+            [FighterState.IDLE_TURN]: {
+                init: () => { },
+                update: this.handleIdleTurnState.bind(this),
+                validFrom: [
+                    FighterState.IDLE, FighterState.JUMP_LAND, 
+                    FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD
+                ],
+            },
+            [FighterState.CROUCH_TURN]: {
+                init: () => { },
+                update: this.handleCrouchTurnState.bind(this),
+                validFrom: [FighterState.CROUCH],
+            },
         };
         
         this.changeState(FighterState.IDLE);
     }
+
+    getDirections = () => this.position.x >= this.opponent.position.x ? FighterDirection.LEFT : FighterDirection.RIGHT;
 
     changeState(newState) {        
         if (newState === this.currentState ) return;
@@ -177,13 +194,24 @@ export class Fighter {
     handleJumpLandState() {
         if (this.animationFrame < 1) return;
 
+        let newState = FighterState.IDLE;
+
         if(!control.isIdle(this.playerId)) {
+            this.direction = this.getDirections();
+
             this.handleIdleState();
-        } else if (this.animations[this,this.currentState][this.animationFrame][1] !== -2) {
-            return;
+        } else {
+            const newDirection = this.getDirections();
+
+            if (newDirection !== this.direction){
+                this.direction = newDirection;
+                newState = FighterState.IDLE_TURN;
+            } else {
+                if (this.animations[this.currentState][this.animationFrame][1] !== -2) return;
+            }
         }
 
-        this.changeState(FighterState.IDLE);
+        this.changeState(newState);
     }
 
     handleIdleState() {
@@ -191,23 +219,57 @@ export class Fighter {
         if (control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_DOWN);
         if (control.isBackward(this.playerId, this.direction)) this.changeState(FighterState.WALK_BACKWARD);
         if (control.isForward(this.playerId, this.direction)) this.changeState(FighterState.WALK_FORWARD);
+
+        const newDirection = this.getDirections();
+
+        if (newDirection !== this.direction) {
+            this.direction = newDirection;
+            this.changeState(FighterState.IDLE_TURN);
+        }
     }
 
     handleWalkForwardState() {
         if (!control.isForward(this.playerId, this.direction)) this.changeState(FighterState.IDLE);
         if (control.isUp(this.playerId)) this.changeState(FighterState.JUMP_START);
         if (control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_DOWN);
+
+        this.direction = this.getDirections();
     }
 
     handleWalkBackwardState() {
         if (!control.isBackward(this.playerId, this.direction)) this.changeState(FighterState.IDLE);
         if (control.isUp(this.playerId)) this.changeState(FighterState.JUMP_START);
         if (control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_DOWN);
+
+        this.direction = this.getDirections();
     }
 
 
     handleCrouchState() {
         if (!control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_UP);
+
+        const newDirection = this.getDirections();
+
+        if (newDirection !== this.direction) {
+            this.direction = newDirection;
+            this.changeState(FighterState.CROUCH_TURN);
+        }
+    }
+
+
+    handleIdleTurnState() {
+        this.handleIdleState();
+
+        if (this.animations[this.currentState][this.animationFrame][1] !== -2) return;
+        this.changeState(FighterState.IDLE);
+    }
+
+
+    handleCrouchTurnState() {
+        this.handleCrouchState();
+
+        if (this.animations[this.currentState][this.animationFrame][1] !== -2) return;
+        this.changeState(FighterState.CROUCH);
     }
 
 
@@ -243,8 +305,12 @@ export class Fighter {
 
     update(time, context) {
         this.position.x += (this.velocity.x * this.direction) * time.secondsPassed;  
-        this.position.y += this.velocity.y * time.secondsPassed;    
+        this.position.y += this.velocity.y * time.secondsPassed;   
 
+        // if ([FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD].includes(this.currentState)) {
+        //     this.direction = this.getDirections();
+        // }
+        
         this.states[this.currentState].update(time, context);
         this.updateAnimation(time);
         this.updateStageContrains(context);
