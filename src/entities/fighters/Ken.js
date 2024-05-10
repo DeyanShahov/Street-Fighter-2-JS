@@ -1,4 +1,4 @@
-import { FighterState } from '../../constants/fighters.js';
+import { FighterState, PushBox } from '../../constants/fighters.js';
 import { Fighter } from './Fighter.js';
 
 export class Ken extends Fighter {
@@ -9,61 +9,61 @@ export class Ken extends Fighter {
 
         this.frames = new Map([
             // Idle Stance
-            ['idle-1', [[876, 528, 59, 90], [34, 86]]],
-            ['idle-2', [[810, 529, 60, 89], [33, 87]]],
-            ['idle-3', [[747, 526, 58, 92], [32, 89]]],
-            ['idle-4', [[683, 523, 55, 93], [31, 90]]],
+            ['idle-1', [[[876, 528, 59, 90], [34, 86]], PushBox.IDLE]],
+            ['idle-2', [[[810, 529, 60, 89], [33, 87]], PushBox.IDLE]],
+            ['idle-3', [[[747, 526, 58, 92], [32, 89]], PushBox.IDLE]],
+            ['idle-4', [[[683, 523, 55, 93], [31, 90]], PushBox.IDLE]],
 
             // Move Forwards
-            ['forwards-1', [[882, 745, 53, 83], [27, 81]]],
-            ['forwards-2', [[874, 902, 60, 88], [35, 86]]],
-            ['forwards-3', [[793, 901, 64, 89], [35, 87]]],
-            ['forwards-4', [[721, 900, 63, 89], [29, 88]]],
-            ['forwards-5', [[641, 901, 54, 89], [25, 87]]],
-            ['forwards-6', [[576, 902, 50, 89], [25, 86]]],
+            ['forwards-1', [[[882, 745, 53, 83], [27, 81]], PushBox.IDLE]],
+            ['forwards-2', [[[874, 902, 60, 88], [35, 86]], PushBox.IDLE]],
+            ['forwards-3', [[[793, 901, 64, 89], [35, 87]], PushBox.IDLE]],
+            ['forwards-4', [[[721, 900, 63, 89], [29, 88]], PushBox.IDLE]],
+            ['forwards-5', [[[641, 901, 54, 89], [25, 87]], PushBox.IDLE]],
+            ['forwards-6', [[[576, 902, 50, 89], [25, 86]], PushBox.IDLE]],
 
             // Move Backwards
-            ['backwards-1', [[875, 1000, 61, 87], [35, 85]]],
-            ['backwards-2', [[810, 998, 59, 90], [36, 87]]],
-            ['backwards-3', [[744, 997, 57, 90], [36, 88]]],
-            ['backwards-4', [[678, 996, 58, 90], [38, 89]]],
-            ['backwards-5', [[598, 997, 58, 91], [36, 88]]],
-            ['backwards-6', [[534, 998, 57, 89], [36, 87]]],
+            ['backwards-1', [[[875, 1000, 61, 87], [35, 85]], PushBox.IDLE]],
+            ['backwards-2', [[[810, 998, 59, 90], [36, 87]], PushBox.IDLE]],
+            ['backwards-3', [[[744, 997, 57, 90], [36, 88]], PushBox.IDLE]],
+            ['backwards-4', [[[678, 996, 58, 90], [38, 89]], PushBox.IDLE]],
+            ['backwards-5', [[[598, 997, 58, 91], [36, 88]], PushBox.IDLE]],
+            ['backwards-6', [[[534, 998, 57, 89], [36, 87]], PushBox.IDLE]],
 
             // Jump first/last frame
-            ['jump-land', [[660, 1060, 55, 103], [29, 83]]],
+            ['jump-land', [[[660, 1060, 55, 103], [29, 83]], PushBox.IDLE]],
            
             // Jump Up
-            ['jump-up-1', [[876, 1207, 57, 105], [32, 107]]],
-            ['jump-up-2', [[818, 1212, 51, 89], [25, 103]]],
-            ['jump-up-3', [[747, 1213, 55, 78], [25, 103]]],
-            ['jump-up-4', [[682, 1215, 48, 71], [28, 101]]],
-            ['jump-up-5', [[623, 1211, 49, 86], [25, 103]]],
-            ['jump-up-6', [[551, 1207, 56, 104], [32, 107]]],
+            ['jump-up-1', [[[876, 1207, 57, 105], [32, 107]], PushBox.JUMP]],
+            ['jump-up-2', [[[818, 1212, 51, 89], [25, 103]], PushBox.JUMP]],
+            ['jump-up-3', [[[747, 1213, 55, 78], [25, 103]], PushBox.JUMP]],
+            ['jump-up-4', [[[682, 1215, 48, 71], [28, 101]], PushBox.JUMP]],
+            ['jump-up-5', [[[623, 1211, 49, 86], [25, 103]], PushBox.JUMP]],
+            ['jump-up-6', [[[551, 1207, 56, 104], [32, 107]], PushBox.JUMP]],
 
             // Jump Forwards/Backwards
-            ['jump-roll-1', [[874, 1094, 56, 104],[25, 106]]],
-            ['jump-roll-2', [[809, 1089, 61, 78],[22, 90]]],
-            ['jump-roll-3', [[699, 1101, 105, 43],[61, 76]]],
-            ['jump-roll-4', [[635, 1089, 54, 83],[42, 111]]],
-            ['jump-roll-5', [[503, 1090, 124, 45],[71, 81]]],
-            ['jump-roll-6', [[420, 1102, 71, 88],[53, 98]]],
-            ['jump-roll-7', [[551, 1207, 56, 104], [32, 107]]],
+            ['jump-roll-1', [[[874, 1094, 56, 104],[25, 106]], PushBox.JUMP]], 
+            ['jump-roll-2', [[[809, 1089, 61, 78],[22, 90]], PushBox.JUMP]],
+            ['jump-roll-3', [[[699, 1101, 105, 43],[61, 76]], PushBox.JUMP]],
+            ['jump-roll-4', [[[635, 1089, 54, 83],[42, 111]], PushBox.JUMP]],
+            ['jump-roll-5', [[[503, 1090, 124, 45],[71, 81]], PushBox.JUMP]],
+            ['jump-roll-6', [[[420, 1102, 71, 88],[53, 98]], PushBox.JUMP]],
+            ['jump-roll-7', [[[551, 1207, 56, 104], [32, 107]], PushBox.JUMP]],
 
             // Crouch
-            ['crouch-1', [[881, 745, 55, 84],[27, 81]]],
-            ['crouch-2', [[803, 759, 57, 69],[25, 66]]],
-            ['crouch-3', [[721, 767, 62, 61],[25, 58]]],
+            ['crouch-1', [[[881, 745, 55, 84],[27, 81]], PushBox.IDLE]],
+            ['crouch-2', [[[803, 759, 57, 69],[25, 66]], PushBox.BEND]],
+            ['crouch-3', [[[721, 767, 62, 61],[25, 58]], PushBox.CROUCH]],
 
             // Stand Turn
-            ['idle-turn-1', [[880, 636, 54, 95],[29, 92]]],
-            ['idle-turn-2', [[814, 633, 58, 99],[30, 95]]],
-            ['idle-turn-3', [[752, 638, 54, 94],[27, 90]]],
+            ['idle-turn-1', [[[880, 636, 54, 95],[29, 92]], PushBox.IDLE]],
+            ['idle-turn-2', [[[814, 633, 58, 99],[30, 95]], PushBox.IDLE]],
+            ['idle-turn-3', [[[752, 638, 54, 94],[27, 90]], PushBox.IDLE]],
 
             // Crouch Turn
-            ['crouch-turn-1', [[884, 832, 53, 61],[26, 58]]],
-            ['crouch-turn-2', [[818, 832, 52, 61],[27, 58]]],
-            ['crouch-turn-3', [[743, 832, 53, 61],[29, 58]]],
+            ['crouch-turn-1', [[[884, 832, 53, 61],[26, 58]], PushBox.CROUCH]],
+            ['crouch-turn-2', [[[818, 832, 52, 61],[27, 58]], PushBox.CROUCH]],
+            ['crouch-turn-3', [[[743, 832, 53, 61],[29, 58]], PushBox.CROUCH]],
         ]);
 
         this.animations = {
