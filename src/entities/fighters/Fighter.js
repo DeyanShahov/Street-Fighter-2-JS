@@ -26,6 +26,7 @@ export class Fighter {
 
         this.pushBox = { x:0, y:0, width:0, height:0 };
 
+        // FSM States
         this.states = {
             [FighterState.IDLE]: {
                 init: this.handleIdleInit.bind(this),

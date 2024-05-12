@@ -1,0 +1,71 @@
+THE TODO LIST!
+
+Controls
+    Add keyboard controls - OK
+    Add gamepad controls  - OK
+    Mobile overlay controls
+
+Stage
+    Add background animation
+    Add camera system
+    Add parallax scrolling
+    Add backgraund collision objects
+    Add floor 3D effect
+
+Fighter
+    Enable animation      - OK
+    Add state machine     - OK
+    Add shadow            - OK
+    Add land state        - OK
+    Add turn state        - OK
+    Enabling change of direction - OK
+    Add push boxes        - OK
+    Add attack states
+    Add hit/hurt boxes
+    Add close states
+    Add block state
+    Add hurt state
+    Add fall state
+    Add special moves
+    Add throw boxes
+    Add throwing states
+    Add success state
+    Add dizyy state
+    Allow fighters to push camera
+
+Ui
+    Add Fps counter         - OK
+    Add health bars
+    Add name tags
+    Add countdown timer
+    Add hit/block graphics
+    Add scores
+    Add win icons
+    Add battle/round start text
+    Add battle/round end text
+
+Moves 
+    Add idle state          - OK
+    Add walking states      - OK
+    Add jumping states      - OK
+    Add crouching states    - OK
+    Add punch moves
+    Add kick moves
+    Add air moves
+    Add crouching moves
+    Add throwing moves
+    Add blocking moves
+    Add Hadoken special moves
+    Add Tatsumaki Senpukyaku special moves
+    Add Shoryuken special move
+
+Game mechanics
+    Set up canvas
+    Set up fighters
+    Battle start
+    Battle end
+    Battle win
+    Battle lose
+    Battle draw
+    Add camera system
+    Global player state
