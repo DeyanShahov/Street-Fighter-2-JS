@@ -7,8 +7,8 @@ Controls
 
 Stage
     Add background animation
-    Add camera system
-    Add parallax scrolling
+    Add camera system      - NOW
+    Add parallax scrolling - NOW
     Add backgraund collision objects
     Add floor 3D effect
 
@@ -31,13 +31,13 @@ Fighter
     Add throwing states
     Add success state
     Add dizyy state
-    Allow fighters to push camera
+    Allow fighters to scroll the camera  - NOW
 
 Ui
     Add Fps counter         - OK
-    Add health bars
-    Add name tags
-    Add countdown timer
+    Add health bars         - NOW
+    Add name tags           - NOW
+    Add countdown timer     - NOW
     Add hit/block graphics
     Add scores
     Add win icons
