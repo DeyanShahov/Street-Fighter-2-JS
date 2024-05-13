@@ -2,20 +2,17 @@ import { Ken } from './entities/fighters/Ken.js';
 import { Ryu } from './entities/fighters/Ryu.js';
 import { Stage } from './entities/Stage.js';
 import { FpsCounter } from './entities/FpsCounter.js'
-import { STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from './constants/stage.js';
-import { FIGHTER_START_DISTANCE, FighterDirection } from './constants/fighters.js';
+import { STAGE_MID_POINT, STAGE_PADDING } from './constants/stage.js';
 import { pollGamepads, registerGamepadEvents, registerKeyboardEvents } from './InputHandler.js';
 import { Shadow } from './entities/fighters/Shadow.js';
 import { StatusBar } from './entities/overlays/StatusBar.js';
 import { Camera } from './Camera.js';
+import { getContext } from './utils/context.js';
 
 export class StreetFighterGame{
     constructor() {
-        this.context = this.getContext();
-        this.fighters = [
-            new Ryu(STAGE_MID_POINT + STAGE_PADDING - FIGHTER_START_DISTANCE, STAGE_FLOOR, FighterDirection.RIGHT, 1),
-            new Ken(STAGE_MID_POINT + STAGE_PADDING + FIGHTER_START_DISTANCE, STAGE_FLOOR, FighterDirection.LEFT, 0),
-        ];
+        this.context = getContext();
+        this.fighters = [new Ryu(0), new Ken(1)];
 
         this.fighters[0].opponent = this.fighters[1];
         this.fighters[1].opponent = this.fighters[0];
@@ -36,14 +33,6 @@ export class StreetFighterGame{
         };
     }
 
-    getContext() {
-        const canvasEL = document.querySelector('canvas');
-        const context = canvasEL.getContext('2d');
-
-        context.imageSmoothingEnabled = false;
-
-        return context;
-    }
 
     update() { 
         this.camera.update(this.frameTime, this.context);
