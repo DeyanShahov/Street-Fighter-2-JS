@@ -62,7 +62,7 @@ export class StatusBar {
             this.timeTimer = time.previous;
         }
 
-        if ( this.time < 95 && this.time > -1 && time.previous > this.timeFlashTimer + TIME_FLASH_DELAY) {
+        if ( this.time < 80 && this.time > -1 && time.previous > this.timeFlashTimer + TIME_FLASH_DELAY) {
             this.useFlashFrames = !this.useFlashFrames;
             this.timeFlashTimer = time.previous;
         }
