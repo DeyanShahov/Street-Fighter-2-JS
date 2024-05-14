@@ -1,16 +1,33 @@
 import { FRAME_TIME } from '../../constants/game.js';
+import { STAGE_PADDING } from '../../constants/stage.js';
 import { drawFrameBase } from '../../utils/context.js';
 import { BackgroundAnimation } from './shared/BackgroundAnimation.js';
+import { SkewedFloor } from './shared/SkewedFloor.js';
 
 export class Stage {
     constructor() {
         this.image = document.querySelector('img[alt="stage"]');  
+        this.floor = new SkewedFloor(this.image, [8, 392, 896, 56]);
 
         this.frames = new Map([
             ['stage-background', [72, 208, 768, 176]],
             ['stage-boat', [8, 16, 521, 180]],
-            ['stage-floor', [8, 392, 896, 72]],
+            ['stage-floor-bottom', [8, 448, 896, 16]],
+
+            // Grey Suit Man
+            ['grey-suit-1', [600, 24, 16, 24]],
+            ['grey-suit-2', [600, 88, 16, 24]],
         ]);
+
+        this.flag = new BackgroundAnimation(
+            this.image,
+            [
+                ['flag-1', [848, 312, 40, 32]],
+                ['flag-2', [848, 264, 40, 32]],
+                ['flag-3', [848, 216, 40, 32]],
+            ],
+            [['flag-1', 133], ['flag-2', 133], ['flag-3', 133]],
+        );
 
         this.baldMan = new BackgroundAnimation(
             this.image,
@@ -83,6 +100,12 @@ export class Stage {
             ],
         );
 
+        this.greySuitMan = {
+            animationFrame: 0,
+            animationTimer: 0,
+            animationDelay: 0,
+        };
+
         this.boat = {
             position: {x: 0, y:0},
             animationFrame: 0,
@@ -104,18 +127,35 @@ export class Stage {
         }
     }
 
+    updateGreySuitMan(time) {
+        if (time.previous > this.greySuitMan.animationTimer + this.greySuitMan.animationDelay) {
+            this.greySuitMan.animationTimer = time.previous;
+            this.greySuitMan.animationDelay = 100 + (Math.random() * 900);
+            this.greySuitMan.animationFrame = !this.greySuitMan.animationFrame;
+        }
+    }
+
     update(time) {
        this.updateBoat(time);
        this.baldMan.update(time);
+       this.updateGreySuitMan(time);
        this.cheeringWoman.update(time);
        this.greenJumperGuy.update(time);
        this.blueCoatGuy.update(time);
        this.purpleJumperGuy.update(time);
        this.brownSuitGuy.update(time);
+       this.flag.update(time);
     }
 
     drawFrame(context, frameKey, x, y) {
         drawFrameBase(context, this.image, this.frames.get(frameKey), x, y);
+    }
+
+    drawSkyOcean(context, camera) {
+        const backgroundX = Math.floor(16 - (camera.position.x / 2.157303));
+
+        this.drawFrame(context, 'stage-background', backgroundX, -camera.position.y);
+        this.flag.draw(context, backgroundX + 560, 16 - camera.position.y);
     }
 
     drawBoat(context, camera) {
@@ -126,6 +166,8 @@ export class Stage {
 
         this.drawFrame(context, 'stage-boat', this.boat.position.x, this.boat.position.y);
         this.baldMan.draw(context, this.boat.position.x + 128, this.boat.position.y + 96);
+        this.drawFrame(context, `grey-suit-${this.greySuitMan.animationFrame + 1}`,
+            this.boat.position.x + 167, this.boat.position.y + 112);
         this.cheeringWoman.draw(context, this.boat.position.x + 192, this.boat.position.y + 104);
         this.greenJumperGuy.draw(context, this.boat.position.x + 224, this.boat.position.y + 104);
         this.blueCoatGuy.draw(context, this.boat.position.x + 288, this.boat.position.y + 96);
@@ -133,9 +175,18 @@ export class Stage {
         this.brownSuitGuy.draw(context, this.boat.position.x + 88, this.boat.position.y + 24);
     }
 
+    drawFloor(context, camera) {
+        this.floor.draw(context, camera, 176);
+
+        this.drawFrame(
+            context, 'stage-floor-bottom',
+            STAGE_PADDING - camera.position.x * 1.1, 232 - camera.position.y
+        );
+    }
+
     draw(context, camera){
-        this.drawFrame(context, 'stage-background', Math.floor(16 - (camera.position.x / 2.157303)), -camera.position.y);
+        this.drawSkyOcean(context, camera);
         this.drawBoat(context, camera);
-        this.drawFrame(context, 'stage-floor', Math.floor(192 - camera.position.x), 176 - camera.position.y);
+        this.drawFloor(context, camera);
     }
 }
