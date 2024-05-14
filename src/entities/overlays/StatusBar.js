@@ -39,6 +39,13 @@ export class StatusBar {
             [`${TIME_FRAME_KEYS[1]}-8`, [144, 192, 14, 16]],
             [`${TIME_FRAME_KEYS[1]}-9`, [160, 192, 14, 16]],
 
+            // Numberic
+            ['score-1', [29, 101, 10, 10]],
+            ['score-2', [41, 101, 10, 10]],
+
+            // Alpha
+            ['score-P', [17, 125, 10, 10]],
+
             // Name tags
             ['tag-ken', [128, 56, 30, 9]],
             ['tag-ryu', [16, 56, 28, 9]],
@@ -91,7 +98,28 @@ export class StatusBar {
         this.drawFrame(context, `${flashFrame}-${timeString.charAt(1)}`, 194, 33);
     }
 
+    drawScore(context, score, x) {
+        const strValue = String(score);
+        const buffer = ((6 * 12) - strValue.length * 12);
+
+        for (let i = 0; i < strValue.length; i++) {
+            this.drawFrame(context, `score-${strValue[i]}`, x + buffer + i * 12, 1);
+        }
+    }
+
+    drawScores(context) {
+        this.drawFrame(context, 'score-1', 4, 1);
+        this.drawFrame(context, 'score-P', 17, 1);
+
+        this.drawFrame(context, 'score-2', 269, 1);
+        this.drawFrame(context, 'score-P', 281, 1);
+
+        this.drawScore(context, 1, 45);
+        this.drawScore(context, 1, 309);
+    }
+
     draw(context) {
+        this.drawScores(context);
         this.drawHealthBars(context);
         this.drawNameTags(context);
         this.drawTime(context);

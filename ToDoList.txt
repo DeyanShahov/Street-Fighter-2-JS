@@ -3,14 +3,15 @@ THE TODO LIST!
 Controls
     Add keyboard controls - OK
     Add gamepad controls  - OK
-    Mobile overlay controls
+    Mobile overlay controls - ?
 
 Stage
-    Add background animation
+    Add background animation - NOW
+    Add fore backgraund objects - NOW
     Add camera system      - OK
     Add parallax scrolling - OK
     Add backgraund collision objects
-    Add floor 3D effect
+    Add floor 3D effect    - NOW
 
 Fighter
     Enable animation      - OK
@@ -39,7 +40,7 @@ Ui
     Add name tags           - OK
     Add countdown timer     - OK
     Add hit/block graphics
-    Add scores
+    Add scores              - NOW
     Add win icons
     Add battle/round start text
     Add battle/round end text
@@ -60,12 +61,12 @@ Moves
     Add Shoryuken special move
 
 Game mechanics
-    Set up canvas
-    Set up fighters
+    Set up canvas          - OK
+    Set up fighters        - OK
     Battle start
     Battle end
     Battle win
     Battle lose
     Battle draw
-    Add camera system
+    Add camera system      - OK
     Global player state

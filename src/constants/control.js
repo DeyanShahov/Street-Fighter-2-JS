@@ -24,10 +24,10 @@ export const controls = [
             [Control.DOWN]: 13,
         },
         keyboard: {
-            [Control.LEFT]: 'ArrowLeft',
-            [Control.RIGHT]: 'ArrowRight',
-            [Control.UP]: 'ArrowUp',
-            [Control.DOWN]: 'ArrowDown',
+            [Control.LEFT]: 'KeyA',
+            [Control.RIGHT]: 'KeyD',
+            [Control.UP]: 'KeyW',
+            [Control.DOWN]: 'KeyS',
         },
     },
     {
@@ -41,11 +41,11 @@ export const controls = [
             [Control.UP]: 12,
             [Control.DOWN]: 13,
         },
-        keyboard: {
-            [Control.LEFT]: 'KeyA',
-            [Control.RIGHT]: 'KeyD',
-            [Control.UP]: 'KeyW',
-            [Control.DOWN]: 'KeyS',
+        keyboard: {          
+            [Control.LEFT]: 'ArrowLeft',
+            [Control.RIGHT]: 'ArrowRight',
+            [Control.UP]: 'ArrowUp',
+            [Control.DOWN]: 'ArrowDown',
         },
     }
 ];
