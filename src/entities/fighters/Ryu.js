@@ -64,9 +64,17 @@ export class Ryu extends Fighter {
             ['crouch-turn-2', [[[816, 46, 52, 61],[27, 58]], PushBox.CROUCH]],
             ['crouch-turn-3', [[[878, 46, 53, 61],[29, 58]], PushBox.CROUCH]],
 
-             // Light Punch
-             ['light-punch-1', [[[9, 365, 64, 91],[32, 88]], PushBox.IDLE]],
-             ['light-punch-2', [[[98, 365, 92, 91],[32, 88]], PushBox.IDLE]],
+            // Light Punch
+            ['light-punch-1', [[[9, 365, 64, 91],[32, 88]], PushBox.IDLE]],
+            ['light-punch-2', [[[98, 365, 92, 91],[32, 88]], PushBox.IDLE]],
+
+            // Medium/Heavy Punch
+            ['medium-punch-1', [[[6, 466, 60, 94],[29, 92]], PushBox.IDLE]],
+            ['medium-punch-2', [[[86, 465, 74, 95],[29, 92]], PushBox.IDLE]],
+            ['medium-punch-3', [[[175, 465, 108, 94],[24, 92]], PushBox.IDLE]],
+
+            // Heavy Punch
+            ['heavy-punch-1', [[[175, 465, 108, 94],[24, 92]], PushBox.IDLE]],
         ]);
 
         this.animations = {
@@ -125,6 +133,16 @@ export class Ryu extends Fighter {
             [FighterState.LIGHT_PUNCH]: [
                 ['light-punch-1', 33], ['light-punch-2', 66],
                 ['light-punch-1', 33], ['light-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.MEDIUM_PUNCH]: [
+                ['medium-punch-1', 16], ['medium-punch-2', 33], ['medium-punch-3', 66],
+                ['medium-punch-2', 50], ['medium-punch-1', 50],
+                ['medium-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HEAVY_PUNCH]: [
+                ['medium-punch-1', 50], ['medium-punch-2', 33], ['heavy-punch-1', 100],
+                ['medium-punch-2', 166], ['medium-punch-1', 199],
+                ['medium-punch-1', FrameDelay.TRANSITION],
             ],
         };
 
