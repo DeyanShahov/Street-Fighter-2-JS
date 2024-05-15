@@ -64,6 +64,10 @@ export class Ken extends Fighter {
             ['crouch-turn-1', [[[884, 832, 53, 61],[26, 58]], PushBox.CROUCH]],
             ['crouch-turn-2', [[[818, 832, 52, 61],[27, 58]], PushBox.CROUCH]],
             ['crouch-turn-3', [[[743, 832, 53, 61],[29, 58]], PushBox.CROUCH]],
+
+            // Light Punch
+            ['light-punch-1', [[[862, 1416, 64, 91],[32, 88]], PushBox.IDLE]],
+            ['light-punch-2', [[[749, 1416, 92, 91],[32, 88]], PushBox.IDLE]],
         ]);
 
         this.animations = {
@@ -118,6 +122,10 @@ export class Ken extends Fighter {
             [FighterState.CROUCH_TURN]: [
                 ['crouch-turn-3', 33], ['crouch-turn-2', 33],
                 ['crouch-turn-1', 33], ['crouch-turn-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.LIGHT_PUNCH]: [
+                ['light-punch-1', 33], ['light-punch-2', 66],
+                ['light-punch-1', 33], ['light-punch-1', FrameDelay.TRANSITION],
             ],
         };
 

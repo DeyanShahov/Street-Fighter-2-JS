@@ -3,6 +3,7 @@ THE TODO LIST!
 Controls
     Add keyboard controls - OK
     Add gamepad controls  - OK
+    Add attacking controls - NOW
     Mobile overlay controls - ?
 
 Stage
@@ -21,18 +22,19 @@ Fighter
     Add turn state        - OK
     Enabling change of direction - OK
     Add push boxes        - OK
-    Add attack states
-    Add hit/hurt boxes
+    Add standing attack states    - NOW
+    Add jumping/crouching attack states
+    Add hit/hurt boxes            - NOW
     Add close states
-    Add block state
     Add hurt state
+    Add block state
     Add fall state
     Add special moves
     Add throw boxes
     Add throwing states
     Add success state
     Add dizyy state
-    Allow fighters to scroll the camera  - OK
+    Allow fighters to push the camera  - OK
 
 Ui
     Add Fps counter         - OK

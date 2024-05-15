@@ -2,6 +2,7 @@ import * as control from '../../engine/InputHandler.js';
 import { FIGHTER_START_DISTANCE, FighterDirection, FighterState, FrameDelay, PUSH_FRICTION } from '../../constants/fighters.js';
 import { STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
 import { rectsOverlap } from '../../utils/collisions.js'; 
+import { Control } from '../../constants/control.js';
 
 
 export class Fighter {
@@ -38,6 +39,7 @@ export class Fighter {
                     FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD,
                     FighterState.JUMP_UP, FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD,
                     FighterState.CROUCH_DOWN, FighterState.JUMP_LAND, FighterState.IDLE_TURN,
+                    FighterState.LIGHT_PUNCH,
                 ],
             },
             [FighterState.WALK_FORWARD]: {
@@ -118,6 +120,11 @@ export class Fighter {
                 update: this.handleCrouchTurnState.bind(this),
                 validFrom: [FighterState.CROUCH],
             },
+            [FighterState.LIGHT_PUNCH]: {
+                init: this.handleStandartLightAttackInit.bind(this),
+                update: this.handleLightPunchState.bind(this),
+                validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
+            },
         };
         
         this.changeState(FighterState.IDLE);
@@ -180,6 +187,10 @@ export class Fighter {
 
     handleCrouchDownInit(){
         this.resetVelocities();
+    }
+
+    handleStandartLightAttackInit() {
+        this.handleIdleInit();
     }
 
 
@@ -266,8 +277,10 @@ export class Fighter {
             this.changeState(FighterState.CROUCH_DOWN);
         } else if (control.isBackward(this.playerId, this.direction)) {
             this.changeState(FighterState.WALK_BACKWARD);
-        }else if (control.isForward(this.playerId, this.direction)) {
+        } else if (control.isForward(this.playerId, this.direction)) {
             this.changeState(FighterState.WALK_FORWARD);
+        } else if (control.isLightPunch(this.playerId)) {
+            this.changeState(FighterState.LIGHT_PUNCH);
         }
 
         const newDirection = this.getDirections();
@@ -328,6 +341,14 @@ export class Fighter {
 
         if (!this.isAnimationCompleted()) return;
         this.changeState(FighterState.CROUCH);
+    }
+
+    handleLightPunchState() {
+        if (this.animationFrame < 2) return;
+        if (control.isLightPunch(this.playerId)) this.animationFrame = 0;
+
+        if (!this.isAnimationCompleted()) return;
+        this.changeState(FighterState.IDLE);
     }
 
 
