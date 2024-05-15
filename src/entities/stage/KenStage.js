@@ -1,10 +1,10 @@
 import { FRAME_TIME } from '../../constants/game.js';
-import { STAGE_PADDING } from '../../constants/stage.js';
+import { STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
 import { drawFrameBase } from '../../utils/context.js';
 import { BackgroundAnimation } from './shared/BackgroundAnimation.js';
 import { SkewedFloor } from './shared/SkewedFloor.js';
 
-export class Stage {
+export class KenStage {
     constructor() {
         this.image = document.querySelector('img[alt="stage"]');  
         this.floor = new SkewedFloor(this.image, [8, 392, 896, 56]);
@@ -17,6 +17,12 @@ export class Stage {
             // Grey Suit Man
             ['grey-suit-1', [600, 24, 16, 24]],
             ['grey-suit-2', [600, 88, 16, 24]],
+
+            // Bollard
+            ['bollard-small', [800, 184, 21, 16]],
+            ['bollard-large', [760, 176, 31, 24]],
+
+            ['barrels', [560, 472, 151, 96]],
         ]);
 
         this.flag = new BackgroundAnimation(
@@ -184,9 +190,36 @@ export class Stage {
         );
     }
 
-    draw(context, camera){
+    drawSmallBollards(context, camera) {
+        const cameraXOffset = camera.position.x / 1.54;
+        const y = 166 - camera.position.y;
+
+        this.drawFrame(context, 'bollard-small', Math.floor(468 - 92 - cameraXOffset), y);
+        this.drawFrame(context, 'bollard-small', Math.floor(468 + 92 - cameraXOffset), y);
+    }
+
+    drawLargeBollards(context, camera) {
+        const midPoint = STAGE_MID_POINT + STAGE_PADDING;
+        const cameraXOffset = camera.position.x / 0.958;
+        const y = 200 - camera.position.y;
+
+        this.drawFrame(context, 'bollard-large', Math.floor(midPoint - 147 - cameraXOffset), y);
+        this.drawFrame(context, 'bollard-large', Math.floor(midPoint + 147 - cameraXOffset), y);
+    }
+
+    drawBarrels(context, camera) {
+        this.drawFrame(context, 'barrels', Math.floor(872 - camera.position.x), 120 - camera.position.y);
+    }
+
+    drawBackground(context, camera){
         this.drawSkyOcean(context, camera);
         this.drawBoat(context, camera);
         this.drawFloor(context, camera);
+        this.drawSmallBollards(context, camera);
+        this.drawBarrels(context, camera);
+    }
+
+    drawForeground(context, camera) {
+        this.drawLargeBollards(context, camera);
     }
 }

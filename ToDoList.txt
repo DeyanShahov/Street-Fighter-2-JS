@@ -6,12 +6,12 @@ Controls
     Mobile overlay controls - ?
 
 Stage
-    Add background animation - NOW
-    Add fore backgraund objects - NOW
+    Add background animation - OK
+    Add fore backgraund objects - OK
     Add camera system      - OK
     Add parallax scrolling - OK
     Add backgraund collision objects
-    Add floor 3D effect    - NOW
+    Add floor 3D effect    - OK
 
 Fighter
     Enable animation      - OK
@@ -40,7 +40,7 @@ Ui
     Add name tags           - OK
     Add countdown timer     - OK
     Add hit/block graphics
-    Add scores              - NOW
+    Add scores              - OK
     Add win icons
     Add battle/round start text
     Add battle/round end text

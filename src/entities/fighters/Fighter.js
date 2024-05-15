@@ -1,4 +1,4 @@
-import * as control from '../../InputHandler.js';
+import * as control from '../../engine/InputHandler.js';
 import { FIGHTER_START_DISTANCE, FighterDirection, FighterState, FrameDelay, PUSH_FRICTION } from '../../constants/fighters.js';
 import { STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
 import { rectsOverlap } from '../../utils/collisions.js'; 
