@@ -31,6 +31,9 @@ export const controls = [
             [Control.LIGHT_PUNCH]: 2,
             [Control.MEDIUM_PUNCH]: 3,
             [Control.HEAVY_PUNCH]: 5,
+            [Control.LIGHT_KICK]: 0,
+            [Control.MEDIUM_KICK]: 1,
+            [Control.HEAVY_KICK]: 4,
         },
         keyboard: {
             [Control.LEFT]: 'KeyA',
@@ -40,6 +43,9 @@ export const controls = [
             [Control.LIGHT_PUNCH]: 'KeyT',
             [Control.MEDIUM_PUNCH]: 'KeyY',
             [Control.HEAVY_PUNCH]: 'KeyU',
+            [Control.LIGHT_KICK]: 'KeyG',
+            [Control.MEDIUM_KICK]: 'KeyH',
+            [Control.HEAVY_KICK]: 'KeyJ',
         },
     },
     {
@@ -55,6 +61,9 @@ export const controls = [
             [Control.LIGHT_PUNCH]: 2,
             [Control.MEDIUM_PUNCH]: 3,
             [Control.HEAVY_PUNCH]: 5,
+            [Control.LIGHT_KICK]: 0,
+            [Control.MEDIUM_KICK]: 1,
+            [Control.HEAVY_KICK]: 4,
         },
         keyboard: {          
             [Control.LEFT]: 'ArrowLeft',
@@ -64,6 +73,9 @@ export const controls = [
             [Control.LIGHT_PUNCH]: 'Numpad7',
             [Control.MEDIUM_PUNCH]: 'Numpad8',
             [Control.HEAVY_PUNCH]: 'Numpad9',
+            [Control.LIGHT_KICK]: 'Numpad4',
+            [Control.MEDIUM_KICK]: 'Numpad5',
+            [Control.HEAVY_KICK]: 'Numpad6',
         },
     }
 ];

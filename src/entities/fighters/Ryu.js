@@ -42,39 +42,53 @@ export class Ryu extends Fighter {
             ['jump-up-6', [[[375, 244, 55, 109], [31, 113]], PushBox.JUMP]],
 
              // Jump Forwards/Backwards
-            ['jump-roll-1', [[[878, 121, 55, 103],[25, 106]], PushBox.JUMP]],
-            ['jump-roll-2', [[[442, 261, 61, 78],[22, 90]], PushBox.JUMP]],
-            ['jump-roll-3', [[[507, 259, 104, 42],[61, 76]], PushBox.JUMP]],
-            ['jump-roll-4', [[[617, 240, 53, 82],[42, 111]], PushBox.JUMP]],
-            ['jump-roll-5', [[[676, 257, 122, 44],[71, 81]], PushBox.JUMP]],
-            ['jump-roll-6', [[[804, 258, 71, 87],[53, 98]], PushBox.JUMP]],
+            ['jump-roll-1', [[[878, 121, 55, 103], [25, 106]], PushBox.JUMP]],
+            ['jump-roll-2', [[[442, 261, 61, 78], [22, 90]], PushBox.JUMP]],
+            ['jump-roll-3', [[[507, 259, 104, 42], [61, 76]], PushBox.JUMP]],
+            ['jump-roll-4', [[[617, 240, 53, 82], [42, 111]], PushBox.JUMP]],
+            ['jump-roll-5', [[[676, 257, 122, 44], [71, 81]], PushBox.JUMP]],
+            ['jump-roll-6', [[[804, 258, 71, 87], [53, 98]], PushBox.JUMP]],
             ['jump-roll-7', [[[883, 261, 54, 109], [31, 113]], PushBox.JUMP]],
 
             // Crouch
-            ['crouch-1', [[[551, 21, 53, 83],[27, 81]], PushBox.IDLE]],
-            ['crouch-2', [[[611, 36, 57, 69],[25, 66]], PushBox.BEND]],
-            ['crouch-3', [[[679, 44, 61, 61],[25, 58]], PushBox.CROUCH]],
+            ['crouch-1', [[[551, 21, 53, 83], [27, 81]], PushBox.IDLE]],
+            ['crouch-2', [[[611, 36, 57, 69], [25, 66]], PushBox.BEND]],
+            ['crouch-3', [[[679, 44, 61, 61], [25, 58]], PushBox.CROUCH]],
             // Stand Turn
-            ['idle-turn-1', [[[348, 8, 54, 95],[29, 92]], PushBox.IDLE]],
-            ['idle-turn-2', [[[414, 6, 58, 97],[30, 94]], PushBox.IDLE]],
-            ['idle-turn-3', [[[486, 10, 54, 94],[27, 90]], PushBox.IDLE]],
+            ['idle-turn-1', [[[348, 8, 54, 95], [29, 92]], PushBox.IDLE]],
+            ['idle-turn-2', [[[414, 6, 58, 97], [30, 94]], PushBox.IDLE]],
+            ['idle-turn-3', [[[486, 10, 54, 94], [27, 90]], PushBox.IDLE]],
 
             // Crouch Turn
-            ['crouch-turn-1', [[[751, 46, 53, 61],[26, 58]], PushBox.CROUCH]],
-            ['crouch-turn-2', [[[816, 46, 52, 61],[27, 58]], PushBox.CROUCH]],
-            ['crouch-turn-3', [[[878, 46, 53, 61],[29, 58]], PushBox.CROUCH]],
+            ['crouch-turn-1', [[[751, 46, 53, 61], [26, 58]], PushBox.CROUCH]],
+            ['crouch-turn-2', [[[816, 46, 52, 61], [27, 58]], PushBox.CROUCH]],
+            ['crouch-turn-3', [[[878, 46, 53, 61], [29, 58]], PushBox.CROUCH]],
 
             // Light Punch
-            ['light-punch-1', [[[9, 365, 64, 91],[32, 88]], PushBox.IDLE]],
-            ['light-punch-2', [[[98, 365, 92, 91],[32, 88]], PushBox.IDLE]],
+            ['light-punch-1', [[[9, 365, 64, 91], [32, 88]], PushBox.IDLE]],
+            ['light-punch-2', [[[98, 365, 92, 91], [32, 88]], PushBox.IDLE]],
 
             // Medium/Heavy Punch
-            ['medium-punch-1', [[[6, 466, 60, 94],[29, 92]], PushBox.IDLE]],
-            ['medium-punch-2', [[[86, 465, 74, 95],[29, 92]], PushBox.IDLE]],
-            ['medium-punch-3', [[[175, 465, 108, 94],[24, 92]], PushBox.IDLE]],
+            ['medium-punch-1', [[[6, 466, 60, 94], [29, 92]], PushBox.IDLE]],
+            ['medium-punch-2', [[[86, 465, 74, 95], [29, 92]], PushBox.IDLE]],
+            ['medium-punch-3', [[[175, 465, 108, 94], [24, 92]], PushBox.IDLE]],
 
             // Heavy Punch
-            ['heavy-punch-1', [[[175, 465, 108, 94],[24, 92]], PushBox.IDLE]],
+            ['heavy-punch-1', [[[175, 465, 108, 94], [24, 92]], PushBox.IDLE]],
+
+            // Light/Medium Kick
+            ['light-kick-1', [[[87, 923, 66, 92], [46, 93]], PushBox.IDLE]],
+            ['light-kick-2', [[[162, 922, 114, 92], [68, 95]], PushBox.IDLE]],
+
+            // Medium Kick
+            ['medium-kick-1', [[[162, 922, 114, 92], [68, 95]], PushBox.IDLE]],
+
+            // Hevy Kick
+            ['heavy-kick-1', [[[5, 1196, 61, 90], [37, 87]], PushBox.IDLE]],
+            ['heavy-kick-2', [[[72, 1192, 94, 94], [44, 91]], PushBox.IDLE]],
+            ['heavy-kick-3', [[[176, 1191, 120, 94], [42, 91]], PushBox.IDLE]],
+            ['heavy-kick-4', [[[306, 1208, 101, 77], [39, 74]], PushBox.IDLE]],
+            ['heavy-kick-5', [[[418, 1204, 64, 81], [38, 78]], PushBox.IDLE]],
         ]);
 
         this.animations = {
@@ -143,6 +157,20 @@ export class Ryu extends Fighter {
                 ['medium-punch-1', 50], ['medium-punch-2', 33], ['heavy-punch-1', 100],
                 ['medium-punch-2', 166], ['medium-punch-1', 199],
                 ['medium-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.LIGHT_KICK]: [
+                ['medium-punch-1', 50], ['light-kick-1', 50], ['light-kick-2', 133],
+                ['light-kick-1', 66], ['medium-punch-1', 16],
+                ['medium-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.MEDIUM_KICK]: [
+                ['medium-punch-1', 83], ['light-kick-1', 100], ['medium-kick-1', 199],
+                ['light-kick-1', 116], ['light-kick-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HEAVY_KICK]: [
+                ['heavy-kick-1', 33], ['heavy-kick-2', 66], ['heavy-kick-3', 133],
+                ['heavy-kick-4', 166], ['heavy-kick-5', 116],
+                ['heavy-kick-5', FrameDelay.TRANSITION],
             ],
         };
 

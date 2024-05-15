@@ -76,6 +76,20 @@ export class Ken extends Fighter {
 
             // Heavy Punch
             ['heavy-punch-1', [[[657, 1509, 108, 94],[24, 92]], PushBox.IDLE]],
+
+            // Light/Medium Kick
+            ['light-kick-1', [[[863, 2384, 66, 92],[35, 92]], PushBox.IDLE]],
+            ['light-kick-2', [[[729, 2387, 114, 92],[58, 92]], PushBox.IDLE]],
+
+            // Medium Kick
+            ['medium-kick-1', [[[729, 2387, 114, 92], [58, 92]], PushBox.IDLE]],
+
+            // Hevy Kick
+            ['heavy-kick-1', [[[870, 2484, 61, 90], [37, 87]], PushBox.IDLE]],
+            ['heavy-kick-2', [[[750, 2480, 95, 94], [44, 91]], PushBox.IDLE]],
+            ['heavy-kick-3', [[[623, 2480, 120, 94], [42, 91]], PushBox.IDLE]],
+            ['heavy-kick-4', [[[513, 2497, 101, 77], [39, 74]], PushBox.IDLE]],
+            ['heavy-kick-5', [[[437, 2493, 64, 81], [38, 78]], PushBox.IDLE]],
         ]);
 
         this.animations = {
@@ -144,6 +158,20 @@ export class Ken extends Fighter {
                 ['medium-punch-1', 50], ['medium-punch-2', 33], ['heavy-punch-1', 100],
                 ['medium-punch-2', 166], ['medium-punch-1', 199],
                 ['medium-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.LIGHT_KICK]: [
+                ['medium-punch-1', 50], ['light-kick-1', 50], ['light-kick-2', 133],
+                ['light-kick-1', 66], ['medium-punch-1', 16],
+                ['medium-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.MEDIUM_KICK]: [
+                ['medium-punch-1', 83], ['light-kick-1', 100], ['medium-kick-1', 199],
+                ['light-kick-1', 116], ['light-kick-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HEAVY_KICK]: [
+                ['heavy-kick-1', 33], ['heavy-kick-2', 66], ['heavy-kick-3', 133],
+                ['heavy-kick-4', 166], ['heavy-kick-5', 116],
+                ['heavy-kick-5', FrameDelay.TRANSITION],
             ],
         };
 
