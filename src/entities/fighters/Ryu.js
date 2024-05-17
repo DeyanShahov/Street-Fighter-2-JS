@@ -94,84 +94,84 @@ export class Ryu extends Fighter {
 
         this.animations = {
             [FighterState.IDLE]: [
-                ['idle-1', 66], ['idle-2', 66], ['idle-3', 66],
-                ['idle-4', 66], ['idle-3', 66], ['idle-2', 66],
+                ['idle-1', 4], ['idle-2', 4], ['idle-3', 4],
+                ['idle-4', 4], ['idle-3', 4], ['idle-2', 4],
             ],
             [FighterState.WALK_FORWARD]: [
-                ['forwards-1', 49], ['forwards-2', 100], ['forwards-3', 66],
-                ['forwards-4', 66], ['forwards-5', 66], ['forwards-6', 100],
+                ['forwards-1', 3], ['forwards-2', 6], ['forwards-3', 4],
+                ['forwards-4', 4], ['forwards-5', 4], ['forwards-6', 6],
             ],
             [FighterState.WALK_BACKWARD]: [
-                ['backwards-1', 49], ['backwards-2', 100], ['backwards-3', 66],
-                ['backwards-4', 66], ['backwards-5', 66], ['backwards-6', 100],
+                ['backwards-1', 3], ['backwards-2', 6], ['backwards-3', 4],
+                ['backwards-4', 4], ['backwards-5', 4], ['backwards-6', 6],
             ],
             [FighterState.JUMP_START]: [
-                ['jump-land', 50], ['jump-land', FrameDelay.TRANSITION],
+                ['jump-land', 3], ['jump-land', FrameDelay.TRANSITION],
             ],
             [FighterState.JUMP_FORWARD]: [
-                ['jump-roll-1', 232], ['jump-roll-2', 83], ['jump-roll-3', 50],
-                ['jump-roll-4', 50], ['jump-roll-5', 50], ['jump-roll-6', 83],
+                ['jump-roll-1', 13], ['jump-roll-2', 5], ['jump-roll-3', 3],
+                ['jump-roll-4', 3], ['jump-roll-5', 3], ['jump-roll-6', 5],
                 ['jump-up-6', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_UP]: [
-                ['jump-up-1', 149], ['jump-up-2', 133], ['jump-up-3', 133],
-                ['jump-up-4', 133], ['jump-up-5', 133],
+                ['jump-up-1', 8], ['jump-up-2', 8], ['jump-up-3', 8],
+                ['jump-up-4', 8], ['jump-up-5', 8],
                 ['jump-up-6', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_BACKWARD]: [
-                ['jump-roll-6', 249], ['jump-roll-5', 50], ['jump-roll-4', 50],
-                ['jump-roll-3', 50], ['jump-roll-2', 50],
+                ['jump-roll-6', 15], ['jump-roll-5', 3], ['jump-roll-4', 3],
+                ['jump-roll-3', 3], ['jump-roll-2', 3],
                 ['jump-roll-1', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_LAND]: [
-                ['jump-land', 33], ['jump-land', 117],
+                ['jump-land', 2], ['jump-land', 5],
                 ['jump-land', FrameDelay.TRANSITION], 
             ],
             [FighterState.CROUCH_DOWN]: [
-                ['crouch-1', 33], ['crouch-2', 33], ['crouch-3', 33],
+                ['crouch-1', 2], ['crouch-2', 2], ['crouch-3', 2],
                 ['crouch-3', FrameDelay.TRANSITION], 
             ],
             [FighterState.CROUCH]: [
                 ['crouch-3', FrameDelay.FREEZE]
             ],
             [FighterState.CROUCH_UP]: [
-                ['crouch-3', 33], ['crouch-2', 33],
-                ['crouch-1', 33], ['crouch-1', FrameDelay.TRANSITION], 
+                ['crouch-3', 2], ['crouch-2', 2],
+                ['crouch-1', 2], ['crouch-1', FrameDelay.TRANSITION], 
             ],
             [FighterState.IDLE_TURN]: [
-                ['idle-turn-3', 33], ['idle-turn-2', 33],
-                ['idle-turn-1', 33], ['idle-turn-1', FrameDelay.TRANSITION],
+                ['idle-turn-3', 2], ['idle-turn-2', 2],
+                ['idle-turn-1', 2], ['idle-turn-1', FrameDelay.TRANSITION],
             ],
             [FighterState.CROUCH_TURN]: [
                 ['crouch-turn-3', 33], ['crouch-turn-2', 33],
                 ['crouch-turn-1', 33], ['crouch-turn-1', FrameDelay.TRANSITION],
             ],
             [FighterState.LIGHT_PUNCH]: [
-                ['light-punch-1', 33], ['light-punch-2', 66],
-                ['light-punch-1', 33], ['light-punch-1', FrameDelay.TRANSITION],
+                ['light-punch-1', 2], ['light-punch-2', 2],
+                ['light-punch-1', 2], ['light-punch-1', FrameDelay.TRANSITION],
             ],
             [FighterState.MEDIUM_PUNCH]: [
-                ['medium-punch-1', 16], ['medium-punch-2', 33], ['medium-punch-3', 66],
-                ['medium-punch-2', 50], ['medium-punch-1', 50],
+                ['medium-punch-1', 1], ['medium-punch-2', 2], ['medium-punch-3', 4],
+                ['medium-punch-2', 3], ['medium-punch-1', 3],
                 ['medium-punch-1', FrameDelay.TRANSITION],
             ],
             [FighterState.HEAVY_PUNCH]: [
-                ['medium-punch-1', 50], ['medium-punch-2', 33], ['heavy-punch-1', 100],
-                ['medium-punch-2', 166], ['medium-punch-1', 199],
+                ['medium-punch-1', 3], ['medium-punch-2', 2], ['heavy-punch-1', 6],
+                ['medium-punch-2', 10], ['medium-punch-1', 12],
                 ['medium-punch-1', FrameDelay.TRANSITION],
             ],
             [FighterState.LIGHT_KICK]: [
-                ['medium-punch-1', 50], ['light-kick-1', 50], ['light-kick-2', 133],
-                ['light-kick-1', 66], ['medium-punch-1', 16],
+                ['medium-punch-1', 3], ['light-kick-1', 3], ['light-kick-2', 8],
+                ['light-kick-1', 4], ['medium-punch-1', 1],
                 ['medium-punch-1', FrameDelay.TRANSITION],
             ],
             [FighterState.MEDIUM_KICK]: [
-                ['medium-punch-1', 83], ['light-kick-1', 100], ['medium-kick-1', 199],
-                ['light-kick-1', 116], ['light-kick-1', FrameDelay.TRANSITION],
+                ['medium-punch-1', 5], ['light-kick-1', 6], ['medium-kick-1', 12],
+                ['light-kick-1', 7], ['light-kick-1', FrameDelay.TRANSITION],
             ],
             [FighterState.HEAVY_KICK]: [
-                ['heavy-kick-1', 33], ['heavy-kick-2', 66], ['heavy-kick-3', 133],
-                ['heavy-kick-4', 166], ['heavy-kick-5', 116],
+                ['heavy-kick-1', 2], ['heavy-kick-2', 4], ['heavy-kick-3', 8],
+                ['heavy-kick-4', 10], ['heavy-kick-5', 7],
                 ['heavy-kick-5', FrameDelay.TRANSITION],
             ],
         };

@@ -1,8 +1,15 @@
 import * as control from '../../engine/InputHandler.js';
-import { FIGHTER_START_DISTANCE, FighterDirection, FighterState, FrameDelay, PUSH_FRICTION } from '../../constants/fighters.js';
+import { 
+    FIGHTER_START_DISTANCE,
+    FighterAttackType, 
+    FighterDirection, 
+    FighterState, FrameDelay, 
+    PUSH_FRICTION 
+} from '../../constants/fighters.js';
 import { STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
-import { rectsOverlap } from '../../utils/collisions.js'; 
+import { boxOverlap, getActualBoxDimensions, rectsOverlap } from '../../utils/collisions.js'; 
 import { Control } from '../../constants/control.js';
+import { FRAME_TIME } from '../../constants/game.js';
 
 
 export class Fighter {
@@ -126,31 +133,37 @@ export class Fighter {
                 validFrom: [FighterState.CROUCH],
             },
             [FighterState.LIGHT_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
                 init: this.handleStandartLightAttackInit.bind(this),
                 update: this.handleLightPunchState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.MEDIUM_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
                 init: this.handleStandartMediumAttackInit.bind(this),
                 update: this.handleMediumPunchState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.HEAVY_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
                 init: this.handleStandartHeavyAttackInit.bind(this),
                 update: this.handleMediumPunchState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.LIGHT_KICK]: {
+                attackType: FighterAttackType.KICK,
                 init: this.handleStandartLightKickInit.bind(this),
                 update: this.handleLightKickState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.MEDIUM_KICK]: {
+                attackType: FighterAttackType.KICK,
                 init: this.handleStandartMediumKickInit.bind(this),
                 update: this.handleMediumKickState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.HEAVY_KICK]: {
+                attackType: FighterAttackType.KICK,
                 init: this.handleStandartHeavyKickInit.bind(this),
                 update: this.handleMediumKickState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
@@ -197,9 +210,9 @@ export class Fighter {
     }
 
     changeState(newState) {        
-        if (newState === this.currentState ) return;
-        // TO DO: проверката за състояние произлизащо от друго състояние не работи, this.currentState в момента е NULL и дава грешка!!!
-        //if ( !this.states[newState].validFrom.includes(this.currentState)) return;
+        if (newState === this.currentState ||  !this.states[newState].validFrom.includes(this.currentState)) {
+            console.warn(`Illegal transition from "${this.currentState}" to "${newState}"`);
+        }
         
         this.currentState = newState;
         this.animationFrame = 0;
@@ -208,8 +221,7 @@ export class Fighter {
     }
 
     resetVelocities() {
-        this.velocity.x = 0;
-        this.velocity.y = 0;
+        this.velocity = { x: 0, y: 0};
     }
 
 
@@ -360,24 +372,46 @@ export class Fighter {
     }
 
     handleWalkForwardState() {
-        if (!control.isForward(this.playerId, this.direction)) {
-            this.changeState(FighterState.IDLE);
-        } else if (control.isUp(this.playerId)) {
-            this.changeState(FighterState.JUMP_START);
-        } else if (control.isDown(this.playerId)) {
-            this.changeState(FighterState.CROUCH_DOWN);
+        if (!control.isForward(this.playerId, this.direction)) this.changeState(FighterState.IDLE);
+        if (control.isUp(this.playerId)) this.changeState(FighterState.JUMP_START);
+        if (control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_DOWN);
+        
+
+        if (control.isLightPunch(this.playerId)) {
+            this.changeState(FighterState.LIGHT_PUNCH);
+        } else if (control.isMediumPunch(this.playerId)) {
+            this.changeState(FighterState.MEDIUM_PUNCH);
+        } else if (control.isHeavyPunch(this.playerId)) {
+            this.changeState(FighterState.HEAVY_PUNCH);
+        } else if (control.isLightKick(this.playerId)) {
+            this.changeState(FighterState.LIGHT_KICK);
+        } else if (control.isMediumKick(this.playerId)) {
+            this.changeState(FighterState.MEDIUM_KICK);
+        } else if (control.isHeavyKick(this.playerId)) {
+            this.changeState(FighterState.HEAVY_KICK);
         }
 
         this.direction = this.getDirections();
     }
 
     handleWalkBackwardState() {
-        if (!control.isBackward(this.playerId, this.direction)) {
-            this.changeState(FighterState.IDLE);
-        } else if (control.isUp(this.playerId)) {
-            this.changeState(FighterState.JUMP_START);
-        } else if (control.isDown(this.playerId)) {
-            this.changeState(FighterState.CROUCH_DOWN);
+        if (!control.isBackward(this.playerId, this.direction)) this.changeState(FighterState.IDLE);
+        if (control.isUp(this.playerId)) this.changeState(FighterState.JUMP_START);
+        if (control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_DOWN);
+       
+
+        if (control.isLightPunch(this.playerId)) {
+            this.changeState(FighterState.LIGHT_PUNCH);
+        } else if (control.isMediumPunch(this.playerId)) {
+            this.changeState(FighterState.MEDIUM_PUNCH);
+        } else if (control.isHeavyPunch(this.playerId)) {
+            this.changeState(FighterState.HEAVY_PUNCH);
+        } else if (control.isLightKick(this.playerId)) {
+            this.changeState(FighterState.LIGHT_KICK);
+        } else if (control.isMediumKick(this.playerId)) {
+            this.changeState(FighterState.MEDIUM_KICK);
+        } else if (control.isHeavyKick(this.playerId)) {
+            this.changeState(FighterState.HEAVY_KICK);
         }
 
         this.direction = this.getDirections();
@@ -486,7 +520,7 @@ export class Fighter {
         const animation = this.animations[this.currentState];
         const [, frameDelay] = animation[this.animationFrame];
 
-        if (time.previous <= this.animationTimer + frameDelay) return;
+        if (time.previous <= this.animationTimer + frameDelay * FRAME_TIME) return;
 
         this.animationTimer = time.previous;
 
@@ -499,6 +533,30 @@ export class Fighter {
         this.boxes = this.getBoxes( animation[this.animationFrame][0] );
     }
 
+
+    updateAttackBoxCollided(time) {
+        if (!this.states[this.currentState].attackType) return;
+
+        const actualHitBox = getActualBoxDimensions(this.position, this.direction, this.boxes.hit);
+
+        for (const hurt of this.opponent.boxes.hurt) {
+            const [x, y, width, height] = hurt;
+            const actualOpponentHurtBox = getActualBoxDimensions(
+                this.opponent.position,
+                this.opponent.direction,
+                {x, y, width, height},
+            );
+
+            if (!boxOverlap(actualHitBox, actualOpponentHurtBox)) return;
+
+            const hurtIndex = this.opponent.boxes.hurt.indexOf(hurt);
+            const hurtName = ['head', 'body', 'feet'];
+
+            console.log(`${this.name} has hit ${this.opponent.name}'s ${hurtName[hurtIndex]}`);
+        }
+    }
+
+
     update(time, context, camera) {
         this.position.x += (this.velocity.x * this.direction) * time.secondsPassed;  
         this.position.y += this.velocity.y * time.secondsPassed;   
@@ -510,6 +568,7 @@ export class Fighter {
         this.states[this.currentState].update(time, context);
         this.updateAnimation(time);
         this.updateStageConstrains(time, context, camera);
+        this.updateAttackBoxCollided(time);
     }
 
     drawDebugBox(context, camera, dimensions, baseColor) {
