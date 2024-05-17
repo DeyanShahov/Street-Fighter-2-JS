@@ -6,6 +6,11 @@ export const FighterDirection = {
     RIGHT: 1,
 };
 
+export const FighterId = {
+    RYU: 'Ryu',
+    KEN: 'Ken',
+}
+
 export const FighterAttackType = {
     PUNCH: 'punch',
     KICK: 'kick',
