@@ -552,7 +552,7 @@ export class Fighter {
             const hurtIndex = this.opponent.boxes.hurt.indexOf(hurt);
             const hurtName = ['head', 'body', 'feet'];
 
-            console.log(`${this.name} has hit ${this.opponent.name}'s ${hurtName[hurtIndex]}`);
+            console.log(`${this.name} with ${"..."} has hit ${this.opponent.name}'s ${hurtName[hurtIndex]}`);
         }
     }
 

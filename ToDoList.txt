@@ -3,7 +3,7 @@ THE TODO LIST!
 Controls
     Add keyboard controls - OK
     Add gamepad controls  - OK
-    Add attacking controls - NOW
+    Add attacking controls - OK
     Mobile overlay controls - ?
 
 Stage
@@ -22,9 +22,9 @@ Fighter
     Add turn state        - OK
     Enabling change of direction - OK
     Add push boxes        - OK
-    Add standing attack states    - NOW
+    Add standing attack states    - OK
     Add jumping/crouching attack states
-    Add hit/hurt boxes            - NOW
+    Add hit/hurt boxes            - OK
     Add close states
     Add hurt state
     Add block state
@@ -33,8 +33,19 @@ Fighter
     Add throw boxes
     Add throwing states
     Add success state
-    Add dizyy state
+    Add dizzy state
     Allow fighters to push the camera  - OK
+
+
+Generic Decals
+    Add hit splash entity    - NOW
+    Add block splash
+    Add dust
+    Add blood
+    Add puke (heavy hit stomach)
+    Add sweat (heavy hit face)
+    Add birds (dizzy state)
+    Add stars (dizzy state)
 
 Ui
     Add Fps counter         - OK
@@ -52,8 +63,8 @@ Moves
     Add walking states      - OK
     Add jumping states      - OK
     Add crouching states    - OK
-    Add punch moves
-    Add kick moves
+    Add punch moves         - OK
+    Add kick moves          - OK
     Add air moves
     Add crouching moves
     Add throwing moves
@@ -71,4 +82,11 @@ Game mechanics
     Battle lose
     Battle draw
     Add camera system      - OK
+    Introduce a scene system - NOW
+    Add global state to the Status bar - NOW
     Global player state
+
+State
+    Add global state      - NOW
+    Add fighter state     - NOW
+    Battle state
