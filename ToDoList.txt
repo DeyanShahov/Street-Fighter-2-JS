@@ -38,7 +38,7 @@ Fighter
 
 
 Generic Decals
-    Add hit splash entity    - NOW
+    Add hit splash entity    - Ok
     Add block splash
     Add dust
     Add blood
@@ -82,11 +82,11 @@ Game mechanics
     Battle lose
     Battle draw
     Add camera system      - OK
-    Introduce a scene system - NOW
-    Add global state to the Status bar - NOW
+    Introduce a scene system - OK
+    Add global state to the Status bar - OK
     Global player state
 
 State
-    Add global state      - NOW
-    Add fighter state     - NOW
+    Add global state      - OK
+    Add fighter state     - OK
     Battle state

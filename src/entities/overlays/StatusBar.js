@@ -1,10 +1,18 @@
-import { TIME_DELAY, TIME_FRAME_KEYS, TIME_FLASH_DELAY, HEALTH_MAX_HIT_POINTS, HEALTH_DAMAGE_COLOR, KO_ANIMATION, KO_FLASH_DELAY, HEALTH_CRITICAL_HIT_POINTS } from '../../constants/battle.js';
+import {
+    TIME_DELAY,
+    TIME_FRAME_KEYS,
+    TIME_FLASH_DELAY,
+    HEALTH_MAX_HIT_POINTS,
+    HEALTH_DAMAGE_COLOR,
+    KO_ANIMATION, KO_FLASH_DELAY,
+    HEALTH_CRITICAL_HIT_POINTS
+} from '../../constants/battle.js';
 import { gameState } from '../../state/gameState.js';
 import { drawFrameBase } from '../../utils/context.js';
 import { FPS } from '../../constants/game.js';
 
 export class StatusBar {
-    constructor () {
+    constructor() {
         this.image = document.querySelector('img[alt="misc"]');
 
         this.time = 99;
@@ -23,7 +31,7 @@ export class StatusBar {
         this.koFrame = 0;
         this.koAnimationTimer = 0;
 
-        this.frames = new Map ([
+        this.frames = new Map([
             ['health-bar', [16, 18, 145, 11]],
 
             ['ko-white', [161, 16, 32, 14]],
@@ -97,7 +105,7 @@ export class StatusBar {
             ['tag-ryu', [16, 56, 28, 9]],
         ]);
 
-        this.name = gameState.fighters.map(({ id}) =>`tag-${id.toLowerCase()}`);
+        this.name = gameState.fighters.map(({ id }) => `tag-${id.toLowerCase()}`);
     }
 
 
@@ -111,7 +119,7 @@ export class StatusBar {
             this.timeTimer = time.previous;
         }
 
-        if ( this.time < 80 && this.time > -1 && time.previous > this.timeFlashTimer + TIME_FLASH_DELAY) {
+        if (this.time < 80 && this.time > -1 && time.previous > this.timeFlashTimer + TIME_FLASH_DELAY) {
             this.useFlashFrames = !this.useFlashFrames;
             this.timeFlashTimer = time.previous;
         }
@@ -158,7 +166,7 @@ export class StatusBar {
     }
 
     drawNameTags(context) {
-        const[name1, name2] = this.name;
+        const [name1, name2] = this.name;
 
         this.drawFrame(context, name1, 32, 33);
         this.drawFrame(context, name2, 322, 33);
@@ -179,12 +187,12 @@ export class StatusBar {
     }
 
     drawScore(context, score, x) {
-        const strValue = String(score);
-        const buffer = ((6 * 12) - strValue.length * 12);
+        if (score < 1) return;
 
-        for (let i = 0; i < strValue.length; i++) {
-            this.drawFrame(context, `score-${strValue[i]}`, x + buffer + i * 12, 1);
-        }
+        const strScore = String(score);
+        const padding = ((6 * 12) - strScore.length * 12);
+
+        this.drawScoreLabel(context, strScore, x + padding);
     }
 
     drawScores(context) {
