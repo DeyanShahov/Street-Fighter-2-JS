@@ -15,7 +15,7 @@ import { gameState } from '../../state/gameState.js';
 
 
 export class Fighter {
-    constructor(playerId){
+    constructor(playerId, onAttackHit){
         this.playerId = playerId;
 
         this.position = {
@@ -37,6 +37,7 @@ export class Fighter {
         this.image = new Image();
 
         this.opponent;
+        this.onAttackHit = onAttackHit;
 
         this.boxes = {
             push: { x:0, y:0, width:0, height:0 },
@@ -563,8 +564,14 @@ export class Fighter {
             const hurtName = ['head', 'body', 'feet'];
             const strength = this.states[this.currentState].attackStrength;
 
-            gameState.fighters[this.playerId].score += FighterAttackBasaData[strength].score;
-            gameState.fighters[this.opponent.playerId].hitPoints -= FighterAttackBasaData[strength].damage;
+            const hitPosition = {
+                x: (actualHitBox.x + (actualHitBox.width / 2) + actualOpponentHurtBox.x + (actualOpponentHurtBox.width / 2)) / 2,
+                y: (actualHitBox.y + (actualHitBox.height / 2) + actualOpponentHurtBox.y + (actualOpponentHurtBox.height / 2)) /2,
+            };
+            hitPosition.x -= 4 - Math.random() * 8;
+            hitPosition.y -= 4 - Math.random() * 8;
+
+            this.onAttackHit(this.playerId, this.opponent.playerId, hitPosition, strength);
 
             console.log(`${gameState.fighters[this.playerId].id} with ${"..."} has hit ${gameState.fighters[this.opponent.playerId].id}'s ${hurtName[hurtIndex]}`);
             

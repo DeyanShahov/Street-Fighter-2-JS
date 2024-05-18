@@ -1,4 +1,4 @@
-import { TIME_DELAY, TIME_FRAME_KEYS, TIME_FLASH_DELAY, HEALTH_MAX_HIT_POINTS, HEALTH_DAMAGE_COLOR } from '../../constants/battle.js';
+import { TIME_DELAY, TIME_FRAME_KEYS, TIME_FLASH_DELAY, HEALTH_MAX_HIT_POINTS, HEALTH_DAMAGE_COLOR, KO_ANIMATION, KO_FLASH_DELAY, HEALTH_CRITICAL_HIT_POINTS } from '../../constants/battle.js';
 import { gameState } from '../../state/gameState.js';
 import { drawFrameBase } from '../../utils/context.js';
 import { FPS } from '../../constants/game.js';
@@ -20,10 +20,14 @@ export class StatusBar {
             hitPoints: HEALTH_MAX_HIT_POINTS,
         }];
 
+        this.koFrame = 0;
+        this.koAnimationTimer = 0;
+
         this.frames = new Map ([
             ['health-bar', [16, 18, 145, 11]],
 
             ['ko-white', [161, 16, 32, 14]],
+            ['ko-red', [161, 1, 32, 14]],
 
             [`${TIME_FRAME_KEYS[0]}-0`, [16, 32, 14, 16]],
             [`${TIME_FRAME_KEYS[0]}-1`, [32, 32, 14, 16]],
@@ -120,14 +124,23 @@ export class StatusBar {
         }
     }
 
+    updateKoIcon(time) {
+        if (this.healthBars.every((healtBar) => healtBar.hitPoints > HEALTH_CRITICAL_HIT_POINTS)) return;
+        if (time.previous < this.koAnimationTimer + KO_FLASH_DELAY[this.koFrame]) return;
+
+        this.koFrame = 1 - this.koFrame;
+        this.koAnimationTimer = time.previous;
+    }
+
     update(time) {
         this.updateTime(time);
         this.updateHealthBars(time);
+        this.updateKoIcon(time);
     }
 
     drawHealthBars(context) {
         this.drawFrame(context, 'health-bar', 31, 20);
-        this.drawFrame(context, 'ko-white', 176, 18);
+        this.drawFrame(context, KO_ANIMATION[this.koFrame], 176, 18 - this.koFrame);
         this.drawFrame(context, 'health-bar', 353, 20, -1);
 
         context.fillStyle = HEALTH_DAMAGE_COLOR;
@@ -182,7 +195,7 @@ export class StatusBar {
         this.drawScore(context, 500000, 177);
 
         this.drawScoreLabel(context, 'P2', 269);
-        this.drawScore(context, gameState.fighters[0].score, 309);
+        this.drawScore(context, gameState.fighters[1].score, 309);
     }
 
     draw(context) {

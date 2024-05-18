@@ -1,4 +1,4 @@
-import { FighterId } from '../constants/fighters.js';
+import { FighterAttackBasaData, FighterAttackStrength, FighterId } from '../constants/fighters.js';
 import { STAGE_MID_POINT, STAGE_PADDING } from '../constants/stage.js';
 import { Camera } from '../engine/Camera.js';
 import { Ken } from '../entities/fighters/Ken.js';
@@ -8,6 +8,7 @@ import { FpsCounter } from '../entities/overlays/FpsCounter.js';
 import { StatusBar } from '../entities/overlays/StatusBar.js';
 import { KenStage } from '../entities/stage/KenStage.js';
 import { gameState } from '../state/gameState.js';
+import { LightHitSplash, MediumHitSplash, HeavyHitSplash } from '../entities/fighters/shared/index.js'
 
 export class BattleScene {
     fighters = [];
@@ -17,7 +18,7 @@ export class BattleScene {
 
     constructor() {
         this.stage = new KenStage();
-        
+
         this.fighters = this.getFighterEntities();
         this.camera = new Camera(STAGE_MID_POINT + STAGE_PADDING - 192, 16, this.fighters);
         this.shadows = this.fighters.map(fighter => new Shadow(fighter));
@@ -26,6 +27,34 @@ export class BattleScene {
             new StatusBar(this.fighters),
             new FpsCounter(),
         ];
+    }
+
+    getHitSplashClass(strength) {
+        switch (strength) {
+            case FighterAttackStrength.LIGHT:
+                return LightHitSplash;
+            case FighterAttackStrength.MEDIUM:
+                return MediumHitSplash;
+            case FighterAttackStrength.HEAVY:
+                return HeavyHitSplash;
+            default:
+                throw new Error('Unknown strength requested!');
+        }
+    }
+
+    addEntity(EntityClass, ...args) {
+        this.entities.push(new EntityClass(...args, this.removeEntity.bind(this)));
+    }
+
+    removeEntity(entity) {
+        this.entities = this.entities.filter((thisEntity) => thisEntity !== entity);
+    }
+
+    handleAttackHit(playerId, opponentId, position, strength) {
+        gameState.fighters[playerId].score += FighterAttackBasaData[strength].score;
+        gameState.fighters[opponentId].hitPoints -= FighterAttackBasaData[strength].damage;
+
+        this.addEntity(this.getHitSplashClass(strength), position.x, position.y, playerId);
     }
 
     getFighterEntities() {
@@ -40,7 +69,7 @@ export class BattleScene {
     getFighterEntity(fighterState, index) {
         const FighterEntityClass = this.getFighterEntityClass(fighterState.id);
 
-        return new FighterEntityClass(index);
+        return new FighterEntityClass(index, this.handleAttackHit.bind(this));
     }
 
     getFighterEntityClass(id) {
