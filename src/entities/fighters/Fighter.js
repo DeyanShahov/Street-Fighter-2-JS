@@ -12,6 +12,7 @@ import { boxOverlap, getActualBoxDimensions, rectsOverlap } from '../../utils/co
 import { FRAME_TIME } from '../../constants/game.js';
 import { gameState } from '../../state/gameState.js';
 import { DEBUG_drawCollisionInfoBoxes } from '../../utils/fighterDebug.js';
+import { playSound, stopSound } from '../../engine/soundHandler.js';
 
 
 export class Fighter {
@@ -139,42 +140,42 @@ export class Fighter {
             [FighterState.LIGHT_PUNCH]: {
                 attackType: FighterAttackType.PUNCH,
                 attackStrength: FighterAttackStrength.LIGHT,
-                init: this.handleStandartLightAttackInit.bind(this),
+                init: this.handleStandartAttackInit.bind(this),
                 update: this.handleLightPunchState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.MEDIUM_PUNCH]: {
                 attackType: FighterAttackType.PUNCH,
                 attackStrength: FighterAttackStrength.MEDIUM,
-                init: this.handleStandartMediumAttackInit.bind(this),
+                init: this.handleStandartAttackInit.bind(this),
                 update: this.handleMediumPunchState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.HEAVY_PUNCH]: {
                 attackType: FighterAttackType.PUNCH,
                 attackStrength: FighterAttackStrength.HEAVY,
-                init: this.handleStandartHeavyAttackInit.bind(this),
+                init: this.handleStandartAttackInit.bind(this),
                 update: this.handleMediumPunchState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.LIGHT_KICK]: {
                 attackType: FighterAttackType.KICK,
                 attackStrength: FighterAttackStrength.LIGHT,
-                init: this.handleStandartLightKickInit.bind(this),
+                init: this.handleStandartAttackInit.bind(this),
                 update: this.handleLightKickState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.MEDIUM_KICK]: {
                 attackType: FighterAttackType.KICK,
                 attackStrength: FighterAttackStrength.MEDIUM,
-                init: this.handleStandartMediumKickInit.bind(this),
+                init: this.handleStandartAttackInit.bind(this),
                 update: this.handleMediumKickState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
             [FighterState.HEAVY_KICK]: {
                 attackType: FighterAttackType.KICK,
                 attackStrength: FighterAttackStrength.HEAVY,
-                init: this.handleStandartHeavyKickInit.bind(this),
+                init: this.handleStandartAttackInit.bind(this),
                 update: this.handleMediumKickState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
@@ -182,6 +183,29 @@ export class Fighter {
         
         this.changeState(FighterState.IDLE);
     }
+
+    soundAttacks = {
+        [FighterAttackStrength.LIGHT]: document.querySelector('audio#sound-fighter-light-attack'),
+        [FighterAttackStrength.MEDIUM]: document.querySelector('audio#sound-fighter-medium-attack'),
+        [FighterAttackStrength.HEAVY]: document.querySelector('audio#sound-fighter-heavy-attack'),
+    };
+
+    soundHits = {
+        [FighterAttackStrength.LIGHT]: {
+            [FighterAttackType.PUNCH]: document.querySelector('audio#sound-fighter-light-punch-hit'),
+            [FighterAttackType.KICK]: document.querySelector('audio#sound-fighter-light-kick-hit'),
+        },
+        [FighterAttackStrength.MEDIUM]: {
+            [FighterAttackType.PUNCH]: document.querySelector('audio#sound-fighter-medium-punch-hit'),
+            [FighterAttackType.KICK]: document.querySelector('audio#sound-fighter-medium-kick-hit'),
+        },
+        [FighterAttackStrength.HEAVY]: {
+            [FighterAttackType.PUNCH]: document.querySelector('audio#sound-fighter-heavy-punch-hit'),
+            [FighterAttackType.KICK]: document.querySelector('audio#sound-fighter-heavy-kick-hit'),
+        },
+    };
+
+    soundLand = document.querySelector('audio#sound-fighter-land');
 
     hasCollidedWithOpponent = () => rectsOverlap(
         this.position.x + this.boxes.push.x, this.position.y + this.boxes.push.y,
@@ -250,29 +274,30 @@ export class Fighter {
         this.resetVelocities();
     }
 
-    handleStandartLightAttackInit() {
+    handleStandartAttackInit() {
         this.resetVelocities();
+        playSound(this.soundAttacks[this.states[this.currentState].attackStrength]);
     }
 
-    handleStandartMediumAttackInit() {
-        this.resetVelocities();
-    }
+    // handleStandartMediumAttackInit() {
+    //     this.resetVelocities();
+    // }
 
-    handleStandartHeavyAttackInit() {
-        this.resetVelocities();
-    }
+    // handleStandartHeavyAttackInit() {
+    //     this.resetVelocities();
+    // }
 
-    handleStandartLightKickInit() {
-        this.resetVelocities();
-    }
+    // handleStandartLightKickInit() {
+    //     this.resetVelocities();
+    // }
 
-    handleStandartMediumKickInit() {
-        this.resetVelocities();
-    }
+    // handleStandartMediumKickInit() {
+    //     this.resetVelocities();
+    // }
 
-    handleStandartHeavyKickInit() {
-        this.resetVelocities();
-    }
+    // handleStandartHeavyKickInit() {
+    //     this.resetVelocities();
+    // }
 
 
     handleCrouchDownState() {
@@ -305,6 +330,7 @@ export class Fighter {
 
     handleJumpLandInit() {
         this.resetVelocities();
+        this.soundLand.play();
     }
 
     handleJumpState(time) {
@@ -456,9 +482,15 @@ export class Fighter {
         this.changeState(FighterState.CROUCH);
     }
 
+    handleLightAttackReset() {
+        this.animationFrame = 0;
+        this.handleStandartAttackInit();
+        this.attackStruck = false;
+    }
+
     handleLightPunchState() {
         if (this.animationFrame < 2) return;
-        if (control.isLightPunch(this.playerId)) this.animationFrame = 0;
+        if (control.isLightPunch(this.playerId)) this.handleLightAttackReset();
 
         if (!this.isAnimationCompleted()) return;
         this.changeState(FighterState.IDLE);
@@ -474,7 +506,7 @@ export class Fighter {
 
     handleLightKickState() {
         if (this.animationFrame < 2) return;
-        if (control.isLightKick(this.playerId)) this.animationFrame = 0;
+        if (control.isLightKick(this.playerId)) this.handleLightAttackReset();
 
         if (!this.isAnimationCompleted()) return;
         this.changeState(FighterState.IDLE);
@@ -545,8 +577,10 @@ export class Fighter {
     }
 
 
-    updateAttackBoxCollided() {
-        if (!this.states[this.currentState].attackType || this.attackStruck) return;
+    updateHitBoxCollided() {
+        const { attackStrength, attackType } = this.states[this.currentState];
+
+        if (!attackType || this.attackStruck) return;
 
         const actualHitBox = getActualBoxDimensions(this.position, this.direction, this.boxes.hit);
 
@@ -559,6 +593,9 @@ export class Fighter {
             );
 
             if (!boxOverlap(actualHitBox, actualOpponentHurtBox)) return;
+
+            stopSound(this.soundAttacks[attackStrength]);
+            playSound(this.soundHits[attackStrength][attackType]);
 
             const hurtIndex = this.opponent.boxes.hurt.indexOf(hurt);
             const hurtName = ['head', 'body', 'feet'];
@@ -592,7 +629,7 @@ export class Fighter {
         this.states[this.currentState].update(time, context);
         this.updateAnimation(time);
         this.updateStageConstrains(time, context, camera);
-        this.updateAttackBoxCollided(time);
+        this.updateHitBoxCollided(time);
     }
 
   

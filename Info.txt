@@ -1,0 +1,10 @@
+Original game source:
+    https://www.youtube.com/watch?v=JW8q8lBJpiE&list=PLf9yt-2olqyLxr-vouWl-qk4toUfjF2LC&index=3
+    ( Coding a Street Fighter game | JavaScript, HTML Canvas | Intro and Tooling (Part 1) )
+
+Audio source:
+    https://downloads.khinsider.com/game-soundtracks/album/street-fighter-ii-the-definitive-soundtrack
+    https://www.sounds-resource.com/arcade/streetfighteriicps1/
+
+Asset source:
+    https://www.spriters-resource.com/arcade/streetfighter2/

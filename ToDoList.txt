@@ -26,7 +26,7 @@ Fighter
     Add jumping/crouching attack states
     Add hit/hurt boxes            - OK
     Add close states
-    Add hurt state
+    Add hurt state                - NOW
     Add block state
     Add fall state
     Add special moves
@@ -41,7 +41,7 @@ Generic Decals
     Add hit splash entity    - Ok
     Add block splash
     Add dust
-    Add blood
+    Add blood (heavy hit face)
     Add puke (heavy hit stomach)
     Add sweat (heavy hit face)
     Add birds (dizzy state)
@@ -90,3 +90,8 @@ State
     Add global state      - OK
     Add fighter state     - OK
     Battle state
+
+Sound and Music
+    Add background music      - NOW
+    Add attack music          - NOW
+    Add special move sounds

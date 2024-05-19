@@ -3,10 +3,12 @@ import { STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
 import { drawFrameBase } from '../../utils/context.js';
 import { BackgroundAnimation } from './shared/BackgroundAnimation.js';
 import { SkewedFloor } from './shared/SkewedFloor.js';
+import { playSound } from '../../engine/soundHandler.js'
 
 export class KenStage {
     constructor() {
-        this.image = document.querySelector('img[alt="stage"]');  
+        this.image = document.querySelector('img[alt="stage"]'); 
+        this.music = document.querySelector('audio#theme-ken'); 
         this.floor = new SkewedFloor(this.image, [8, 392, 896, 56]);
 
         this.frames = new Map([
@@ -119,7 +121,11 @@ export class KenStage {
             animationDelay: 22,
             animation: [0, -1, -2, -3, -4, -3, -2, -1],
         };
+
+        playSound(this.music, 0.1);
     }
+
+
 
     updateBoat(time) {
          if (time.previous > this.boat.animationTimer + this.boat.animationDelay * FRAME_TIME) {
