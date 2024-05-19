@@ -8,7 +8,8 @@ import {
     FighterState, FrameDelay,
     PUSH_FRICTION,
     HurtStateValidForm,
-    FIGHTER_HURT_DELAY
+    FIGHTER_HURT_DELAY,
+    FighterAttackBasaData
 } from '../../constants/fighters.js';
 import { STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
 import { boxOverlap, getActualBoxDimensions, rectsOverlap } from '../../utils/collisions.js';
@@ -42,6 +43,8 @@ export class Fighter {
 
         this.hurtShake = 0;
         this.hurtShakeTimer = 0;
+        this.slideVelocity = 0;
+        this.slideFriction = 0;
 
         this.opponent;
         this.onAttackHit = onAttackHit;
@@ -317,6 +320,15 @@ export class Fighter {
         this.velocity = { x: 0, y: 0 };
     }
 
+    resetSlide(transferToOpponent = false) {
+        if (transferToOpponent) {
+            this.opponent.slideVelocity = this.slideVelocity;
+            this.opponent.slideFriction = this.slideFriction;
+        }
+        this.slideFriction = 0;
+        this.slideVelocity = 0;
+    }
+
 
     handleIdleInit() {
         this.resetVelocities();
@@ -573,6 +585,10 @@ export class Fighter {
 
     handleAttackHit(attackStrength, hitLocation) {
         const newState = this.getHitState(attackStrength, hitLocation);
+        const { velocity, friction } = FighterAttackBasaData[attackStrength].slide;
+
+        this.slideVelocity = velocity;
+        this.slideFriction = friction;
         this.changeState(newState);
     }
 
@@ -580,10 +596,12 @@ export class Fighter {
     updateStageConstrains(time, context, camera) {
         if (this.position.x > camera.position.x + context.canvas.width - this.boxes.push.width) {
             this.position.x = camera.position.x + context.canvas.width - this.boxes.push.width;
+            this.resetSlide(true);
         }
 
         if (this.position.x < camera.position.x + this.boxes.push.width) {
             this.position.x = camera.position.x + this.boxes.push.width;
+            this.resetSlide(true);
         }
 
         if (this.hasCollidedWithOpponent()) {
@@ -682,16 +700,25 @@ export class Fighter {
         this.hurtShakeTimer = time.previous + FRAME_TIME;
     }
 
+    updateSlide(time) {
+        if (this.slideVelocity >= 0) return;
+
+        this.slideVelocity += this.slideFriction * time.secondsPassed;
+        if (this.slideVelocity < 0) return;
+
+        this.resetSlide();
+    }
+
+    updatePosition(time) {
+        this.position.x += ((this.velocity.x + this.slideVelocity) * this.direction) * time.secondsPassed;
+        this.position.y += this.velocity.y * time.secondsPassed;
+    }
+
 
     update(time, context, camera) {
-        this.position.x += (this.velocity.x * this.direction) * time.secondsPassed;
-        this.position.y += this.velocity.y * time.secondsPassed;
-
-        // if ([FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD].includes(this.currentState)) {
-        //     this.direction = this.getDirections();
-        // }
-
         this.states[this.currentState].update(time, context);
+        this.updateSlide(time);
+        this.updatePosition(time);
         this.updateAnimation(time);
         this.updateStageConstrains(time, context, camera);
         this.updateHitBoxCollided(time);
