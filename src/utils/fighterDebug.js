@@ -32,7 +32,7 @@ function drawBox(context, camera, position, direction, dimensions, color) {
 }
 
 export function DEBUG_drawCollisionInfoBoxes(fighter, context, camera) {
-    const { position, direction, boxes} = fighter;
+    const { position, direction, boxes } = fighter;
 
     context.lineWidth = 1;
 
@@ -40,7 +40,7 @@ export function DEBUG_drawCollisionInfoBoxes(fighter, context, camera) {
     drawBox(context, camera, position, direction, Object.values(boxes.push), '#55FF55');
 
     // Hurt Boxes
-    for (const hurtBox of boxes.hurt) {
+    for (const hurtBox of Object.values(boxes.hurt)) {
         drawBox(context, camera, position, direction, hurtBox, '#7777FF');
     }
 
@@ -49,4 +49,10 @@ export function DEBUG_drawCollisionInfoBoxes(fighter, context, camera) {
 
     // Origin
     drawCross(context, camera, position, '#FFFFFF');
+}
+
+export function DEBUG_logHit(fighter, gameState,  hitStrength, hitLocation) {
+    console.log(`${gameState.fighters[fighter.playerId].id} has hit ${gameState.fighters[fighter.opponent.playerId].id}'s ${hitLocation} with a ${hitStrength} attack`);
+    //console.log(`${fighter.playerId} has hit ${fighter.opponent.playerId}'s ${hitLocation} with a ${hitStrength} attack`);
+    //console.log(gameState.fighters[fighter.playerId].id);
 }

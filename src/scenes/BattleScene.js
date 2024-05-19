@@ -1,4 +1,4 @@
-import { FighterAttackBasaData, FighterAttackStrength, FighterId } from '../constants/fighters.js';
+import { FIGHTER_HURT_DELAY, FighterAttackBasaData, FighterAttackStrength, FighterId } from '../constants/fighters.js';
 import { STAGE_MID_POINT, STAGE_PADDING } from '../constants/stage.js';
 import { Camera } from '../engine/Camera.js';
 import { Ken, Ryu } from '../entities/fighters/index.js';
@@ -7,12 +7,15 @@ import { StatusBar } from '../entities/overlays/StatusBar.js';
 import { KenStage } from '../entities/stage/KenStage.js';
 import { gameState } from '../state/gameState.js';
 import { LightHitSplash, MediumHitSplash, HeavyHitSplash, Shadow} from '../entities/fighters/shared/index.js'
+import { FRAME_TIME } from '../constants/game.js';
 
 export class BattleScene {
     fighters = [];
     camera = undefined;
     shadows = [];
     entities = [];
+    fighterDrawOrder = [0, 1];
+    hurtTimer = undefined;
 
     constructor() {
         this.stage = new KenStage();
@@ -52,10 +55,12 @@ export class BattleScene {
         this.entities = this.entities.filter((thisEntity) => thisEntity !== entity);
     }
 
-    handleAttackHit(playerId, opponentId, position, strength) {
+    handleAttackHit(time, playerId, opponentId, position, strength) {
         gameState.fighters[playerId].score += FighterAttackBasaData[strength].score;
         gameState.fighters[opponentId].hitPoints -= FighterAttackBasaData[strength].damage;
 
+        this.hurtTimer = time.previous + (FIGHTER_HURT_DELAY * FRAME_TIME);
+        this.fighterDrawOrder = [opponentId, playerId];
         this.addEntity(this.getHitSplashClass(strength), position.x, position.y, playerId);
     }
 
@@ -89,7 +94,11 @@ export class BattleScene {
 
     updateFighters(time, context) {
         for (const fighter of this.fighters) {
-            fighter.update(time, context, this.camera);
+            if (time.previous < this.hurtTimer) {
+                fighter.updateHurtShake(time, this.hurtTimer);
+            } else {
+                fighter.update(time, context, this.camera);
+            }
         }
     }
 
@@ -122,8 +131,8 @@ export class BattleScene {
 
 
     drawFighters(context) {
-        for (const fighter of this.fighters) {
-            fighter.draw(context, this.camera);
+        for (const fighterId of this.fighterDrawOrder) {
+            this.fighters[fighterId].draw(context, this.camera);
         }
     }
 

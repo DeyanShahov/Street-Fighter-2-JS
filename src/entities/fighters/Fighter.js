@@ -1,29 +1,32 @@
 import * as control from '../../engine/InputHandler.js';
-import { 
+import {
     FIGHTER_START_DISTANCE,
     FighterAttackStrength,
-    FighterAttackType, 
-    FighterDirection, 
-    FighterState, FrameDelay, 
-    PUSH_FRICTION 
+    FighterAttackType,
+    FighterDirection,
+    FighterHurtBox,
+    FighterState, FrameDelay,
+    PUSH_FRICTION,
+    HurtStateValidForm,
+    FIGHTER_HURT_DELAY
 } from '../../constants/fighters.js';
 import { STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
-import { boxOverlap, getActualBoxDimensions, rectsOverlap } from '../../utils/collisions.js'; 
+import { boxOverlap, getActualBoxDimensions, rectsOverlap } from '../../utils/collisions.js';
 import { FRAME_TIME } from '../../constants/game.js';
 import { gameState } from '../../state/gameState.js';
-import { DEBUG_drawCollisionInfoBoxes } from '../../utils/fighterDebug.js';
+import { DEBUG_drawCollisionInfoBoxes, DEBUG_logHit } from '../../utils/fighterDebug.js';
 import { playSound, stopSound } from '../../engine/soundHandler.js';
 
 
 export class Fighter {
-    constructor(playerId, onAttackHit){
+    constructor(playerId, onAttackHit) {
         this.playerId = playerId;
 
         this.position = {
             x: STAGE_MID_POINT + STAGE_PADDING + (playerId === 0 ? -FIGHTER_START_DISTANCE : FIGHTER_START_DISTANCE),
             y: STAGE_FLOOR
         };
-        this.velocity = {x: 0, y: 0};
+        this.velocity = { x: 0, y: 0 };
         this.initialVelocity = {};
         this.direction = playerId === 0 ? FighterDirection.RIGHT : FighterDirection.LEFT;
         this.gravity = 0;
@@ -34,16 +37,23 @@ export class Fighter {
         this.animationFrame = 0;
         this.animationTimer = 0;
         this.animations = {};
-        
+
         this.image = new Image();
+
+        this.hurtShake = 0;
+        this.hurtShakeTimer = 0;
 
         this.opponent;
         this.onAttackHit = onAttackHit;
 
         this.boxes = {
-            push: { x:0, y:0, width:0, height:0 },
-            hurt: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-            hit: { x:0, y:0, width:0, height:0 },
+            push: { x: 0, y: 0, width: 0, height: 0 },
+            hit: { x: 0, y: 0, width: 0, height: 0 },
+            hurt: {
+                [FighterHurtBox.HEAD]: [0, 0, 0, 0],
+                [FighterHurtBox.BODY]: [0, 0, 0, 0],
+                [FighterHurtBox.FEET]: [0, 0, 0, 0],
+            },
         };
 
         // FSM States
@@ -55,7 +65,7 @@ export class Fighter {
                     FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD,
                     FighterState.JUMP_UP, FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD,
                     FighterState.CROUCH_DOWN, FighterState.JUMP_LAND, FighterState.IDLE_TURN,
-                    FighterState.LIGHT_PUNCH, FighterState.MEDIUM_PUNCH, FighterState. HEAVY_PUNCH,
+                    FighterState.LIGHT_PUNCH, FighterState.MEDIUM_PUNCH, FighterState.HEAVY_PUNCH,
                     FighterState.LIGHT_KICK, FighterState.MEDIUM_KICK, FighterState.HEAVY_KICK,
                 ],
             },
@@ -128,7 +138,7 @@ export class Fighter {
                 init: () => { },
                 update: this.handleIdleTurnState.bind(this),
                 validFrom: [
-                    FighterState.IDLE, FighterState.JUMP_LAND, 
+                    FighterState.IDLE, FighterState.JUMP_LAND,
                     FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD
                 ],
             },
@@ -179,8 +189,38 @@ export class Fighter {
                 update: this.handleMediumKickState.bind(this),
                 validFrom: [FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD],
             },
+            [FighterState.HURT_HEAD_LIGHT]: {
+                init: this.handleHurtInit.bind(this),
+                update: this.handleHurtState.bind(this),
+                validFrom: HurtStateValidForm,
+            },
+            [FighterState.HURT_HEAD_MEDIUM]: {
+                init: this.handleHurtInit.bind(this),
+                update: this.handleHurtState.bind(this),
+                validFrom: HurtStateValidForm,
+            },
+            [FighterState.HURT_HEAD_HEAVY]: {
+                init: this.handleHurtInit.bind(this),
+                update: this.handleHurtState.bind(this),
+                validFrom: HurtStateValidForm,
+            },
+            [FighterState.HURT_BODY_LIGHT]: {
+                init: this.handleHurtInit.bind(this),
+                update: this.handleHurtState.bind(this),
+                validFrom: HurtStateValidForm,
+            },
+            [FighterState.HURT_BODY_MEDIUM]: {
+                init: this.handleHurtInit.bind(this),
+                update: this.handleHurtState.bind(this),
+                validFrom: HurtStateValidForm,
+            },
+            [FighterState.HURT_BODY_HEAVY]: {
+                init: this.handleHurtInit.bind(this),
+                update: this.handleHurtState.bind(this),
+                validFrom: HurtStateValidForm,
+            },
         };
-        
+
         this.changeState(FighterState.IDLE);
     }
 
@@ -216,38 +256,57 @@ export class Fighter {
     );
 
     getDirections() {
-        if ( this.position.x + this.boxes.push.x + this.boxes.push.width 
+        if (this.position.x + this.boxes.push.x + this.boxes.push.width
             <= this.opponent.position.x + this.opponent.boxes.push.x) {
             return FighterDirection.RIGHT;
-        } else if ( this.position.x + this.boxes.push.x 
+        } else if (this.position.x + this.boxes.push.x
             >= this.opponent.position.x + this.opponent.boxes.push.x + this.opponent.boxes.push.width) {
             return FighterDirection.LEFT;
-        }  
-        
+        }
+
         return this.direction;
+    }
+
+    getHitState(attackStrength, hitLocation) {
+        switch (attackStrength) {
+            case FighterAttackStrength.LIGHT:
+                if (hitLocation === FighterHurtBox.HEAD) return FighterState.HURT_HEAD_LIGHT;
+                return FighterState.HURT_BODY_LIGHT;
+            case FighterAttackStrength.MEDIUM:
+                if (hitLocation === FighterHurtBox.HEAD) return FighterState.HURT_HEAD_MEDIUM;
+                return FighterState.HURT_BODY_MEDIUM;
+            case FighterAttackStrength.HEAVY:
+                if (hitLocation === FighterHurtBox.HEAD) return FighterState.HURT_HEAD_HEAVY;
+                return FighterState.HURT_BODY_HEAVY;
+        }
     }
 
     isAnimationCompleted = () => this.animations[this.currentState][this.animationFrame][1] === FrameDelay.TRANSITION;
 
     getBoxes(frameKey) {
         const [,
-            [ pushX = 0, pushY = 0, pushWidth = 0, pushHeight = 0] = [],
-            [ head = [0, 0, 0, 0], body = [0, 0, 0, 0], feat = [0, 0, 0, 0]] = [],
-            [ hitX = 0, hitY = 0, hitWidth = 0, hitHeight = 0] = [],
+            [pushX = 0, pushY = 0, pushWidth = 0, pushHeight = 0] = [],
+            [head = [0, 0, 0, 0], body = [0, 0, 0, 0], feat = [0, 0, 0, 0]] = [],
+            [hitX = 0, hitY = 0, hitWidth = 0, hitHeight = 0] = [],
         ] = this.frames.get(frameKey);
 
         return {
-            push: { x: pushX, y: pushY, width: pushWidth, height: pushHeight},
-            hurt: [head, body, feat],
-            hit: { x: hitX, y: hitY, width: hitWidth, height: hitHeight},
+            push: { x: pushX, y: pushY, width: pushWidth, height: pushHeight },
+            hit: { x: hitX, y: hitY, width: hitWidth, height: hitHeight },
+            hurt: {
+                [FighterHurtBox.HEAD]: head,
+                [FighterHurtBox.BODY]: body,
+                [FighterHurtBox.FEET]: feat,
+            },
         };
     }
 
-    changeState(newState) {        
-        if (newState === this.currentState ||  !this.states[newState].validFrom.includes(this.currentState)) {
+
+    changeState(newState) {
+        if (!this.states[newState].validFrom.includes(this.currentState)) {
             console.warn(`Illegal transition from "${this.currentState}" to "${newState}"`);
         }
-        
+
         this.currentState = newState;
         this.animationFrame = 0;
 
@@ -255,13 +314,13 @@ export class Fighter {
     }
 
     resetVelocities() {
-        this.velocity = { x: 0, y: 0};
+        this.velocity = { x: 0, y: 0 };
     }
 
 
     handleIdleInit() {
-       this.resetVelocities();
-       this.attackStruck = false;
+        this.resetVelocities();
+        this.attackStruck = false;
     }
 
 
@@ -270,7 +329,7 @@ export class Fighter {
     }
 
 
-    handleCrouchDownInit(){
+    handleCrouchDownInit() {
         this.resetVelocities();
     }
 
@@ -278,26 +337,6 @@ export class Fighter {
         this.resetVelocities();
         playSound(this.soundAttacks[this.states[this.currentState].attackStrength]);
     }
-
-    // handleStandartMediumAttackInit() {
-    //     this.resetVelocities();
-    // }
-
-    // handleStandartHeavyAttackInit() {
-    //     this.resetVelocities();
-    // }
-
-    // handleStandartLightKickInit() {
-    //     this.resetVelocities();
-    // }
-
-    // handleStandartMediumKickInit() {
-    //     this.resetVelocities();
-    // }
-
-    // handleStandartHeavyKickInit() {
-    //     this.resetVelocities();
-    // }
 
 
     handleCrouchDownState() {
@@ -333,6 +372,13 @@ export class Fighter {
         this.soundLand.play();
     }
 
+
+    handleHurtInit() {
+        this.resetVelocities();
+        this.hurtShake = 2;
+        this.hurtShakeTimer = performance.now();
+    }
+
     handleJumpState(time) {
         this.velocity.y += this.gravity * time.secondsPassed;
 
@@ -359,14 +405,14 @@ export class Fighter {
 
         let newState = FighterState.IDLE;
 
-        if(!control.isIdle(this.playerId)) {
+        if (!control.isIdle(this.playerId)) {
             this.direction = this.getDirections();
 
             this.handleIdleState();
         } else {
             const newDirection = this.getDirections();
 
-            if (newDirection !== this.direction){
+            if (newDirection !== this.direction) {
                 this.direction = newDirection;
                 newState = FighterState.IDLE_TURN;
             } else {
@@ -376,6 +422,7 @@ export class Fighter {
 
         this.changeState(newState);
     }
+
 
     handleIdleState() {
         if (control.isUp(this.playerId)) {
@@ -412,7 +459,7 @@ export class Fighter {
         if (!control.isForward(this.playerId, this.direction)) this.changeState(FighterState.IDLE);
         if (control.isUp(this.playerId)) this.changeState(FighterState.JUMP_START);
         if (control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_DOWN);
-        
+
 
         if (control.isLightPunch(this.playerId)) {
             this.changeState(FighterState.LIGHT_PUNCH);
@@ -435,7 +482,7 @@ export class Fighter {
         if (!control.isBackward(this.playerId, this.direction)) this.changeState(FighterState.IDLE);
         if (control.isUp(this.playerId)) this.changeState(FighterState.JUMP_START);
         if (control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_DOWN);
-       
+
 
         if (control.isLightPunch(this.playerId)) {
             this.changeState(FighterState.LIGHT_PUNCH);
@@ -517,13 +564,25 @@ export class Fighter {
         this.changeState(FighterState.IDLE);
     }
 
+    handleHurtState() {
+        if (!this.isAnimationCompleted()) return;
+        this.hurtShake = 0;
+        this.hurtShakeTimer = 0;
+        this.changeState(FighterState.IDLE);
+    }
+
+    handleAttackHit(attackStrength, hitLocation) {
+        const newState = this.getHitState(attackStrength, hitLocation);
+        this.changeState(newState);
+    }
+
 
     updateStageConstrains(time, context, camera) {
-        if(this.position.x > camera.position.x + context.canvas.width - this.boxes.push.width) { 
+        if (this.position.x > camera.position.x + context.canvas.width - this.boxes.push.width) {
             this.position.x = camera.position.x + context.canvas.width - this.boxes.push.width;
         }
 
-        if(this.position.x < camera.position.x + this.boxes.push.width ) {           
+        if (this.position.x < camera.position.x + this.boxes.push.width) {
             this.position.x = camera.position.x + this.boxes.push.width;
         }
 
@@ -570,26 +629,26 @@ export class Fighter {
         if (frameDelay <= FrameDelay.FREEZE) return;
 
         this.animationFrame++;
-           
+
         if (this.animationFrame >= animation.length) this.animationFrame = 0;
-          
-        this.boxes = this.getBoxes( animation[this.animationFrame][0] );
+
+        this.boxes = this.getBoxes(animation[this.animationFrame][0]);
     }
 
 
-    updateHitBoxCollided() {
+    updateHitBoxCollided(time) {
         const { attackStrength, attackType } = this.states[this.currentState];
 
         if (!attackType || this.attackStruck) return;
 
         const actualHitBox = getActualBoxDimensions(this.position, this.direction, this.boxes.hit);
 
-        for (const hurt of this.opponent.boxes.hurt) {
-            const [x, y, width, height] = hurt;
+        for (const [hurtLoacation, hurtBox] of Object.entries(this.opponent.boxes.hurt)) {
+            const [x, y, width, height] = hurtBox;
             const actualOpponentHurtBox = getActualBoxDimensions(
                 this.opponent.position,
                 this.opponent.direction,
-                {x, y, width, height},
+                { x, y, width, height },
             );
 
             if (!boxOverlap(actualHitBox, actualOpponentHurtBox)) return;
@@ -597,42 +656,48 @@ export class Fighter {
             stopSound(this.soundAttacks[attackStrength]);
             playSound(this.soundHits[attackStrength][attackType]);
 
-            const hurtIndex = this.opponent.boxes.hurt.indexOf(hurt);
-            const hurtName = ['head', 'body', 'feet'];
-            const strength = this.states[this.currentState].attackStrength;
-
             const hitPosition = {
                 x: (actualHitBox.x + (actualHitBox.width / 2) + actualOpponentHurtBox.x + (actualOpponentHurtBox.width / 2)) / 2,
-                y: (actualHitBox.y + (actualHitBox.height / 2) + actualOpponentHurtBox.y + (actualOpponentHurtBox.height / 2)) /2,
+                y: (actualHitBox.y + (actualHitBox.height / 2) + actualOpponentHurtBox.y + (actualOpponentHurtBox.height / 2)) / 2,
             };
             hitPosition.x -= 4 - Math.random() * 8;
             hitPosition.y -= 4 - Math.random() * 8;
 
-            this.onAttackHit(this.playerId, this.opponent.playerId, hitPosition, strength);
+            this.onAttackHit(time, this.playerId, this.opponent.playerId, hitPosition, this.states[this.currentState].attackStrength);
 
-            console.log(`${gameState.fighters[this.playerId].id} with ${"..."} has hit ${gameState.fighters[this.opponent.playerId].id}'s ${hurtName[hurtIndex]}`);
-            
+            DEBUG_logHit(this, gameState, attackStrength, hurtLoacation);
+
+            this.opponent.handleAttackHit(attackStrength, hurtLoacation);
             this.attackStruck = true;
             return;
         }
     }
 
+    updateHurtShake(time, delay) {
+        if (this.hurtShakeTimer === 0 || time.previous <= this.hurtShakeTimer) return;
+
+        const shakeAmount = (delay - time.previous < (FIGHTER_HURT_DELAY * FRAME_TIME) / 2 ? 1 : 2);
+
+        this.hurtShake = shakeAmount - this.hurtShake;
+        this.hurtShakeTimer = time.previous + FRAME_TIME;
+    }
+
 
     update(time, context, camera) {
-        this.position.x += (this.velocity.x * this.direction) * time.secondsPassed;  
-        this.position.y += this.velocity.y * time.secondsPassed;   
+        this.position.x += (this.velocity.x * this.direction) * time.secondsPassed;
+        this.position.y += this.velocity.y * time.secondsPassed;
 
         // if ([FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD].includes(this.currentState)) {
         //     this.direction = this.getDirections();
         // }
-        
+
         this.states[this.currentState].update(time, context);
         this.updateAnimation(time);
         this.updateStageConstrains(time, context, camera);
         this.updateHitBoxCollided(time);
     }
 
-  
+
     draw(context, camera) {
         const [frameKey] = this.animations[this.currentState][this.animationFrame];
 
@@ -647,7 +712,7 @@ export class Fighter {
             this.image,
             x, y,
             width, height,
-            Math.floor((this.position.x - camera.position.x) * this.direction) - originX,
+            Math.floor((this.position.x - this.hurtShake - camera.position.x) * this.direction) - originX,
             Math.floor(this.position.y - camera.position.y) - originY,
             width, height
         );

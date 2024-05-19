@@ -122,7 +122,7 @@ export class KenStage {
             animation: [0, -1, -2, -3, -4, -3, -2, -1],
         };
 
-        playSound(this.music, 0.1);
+        //playSound(this.music, 0.01);
     }
 
 
