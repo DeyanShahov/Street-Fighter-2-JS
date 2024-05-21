@@ -450,7 +450,8 @@ export class Fighter {
         } else if (control.isForward(this.playerId, this.direction)) {
             this.changeState(FighterState.WALK_FORWARD, time);
         } else if (control.isLightPunch(this.playerId)) {
-            this.changeState(FighterState.LIGHT_PUNCH, time);
+            this.changeState(FighterState.SPECIAL_1, time);
+            //this.changeState(FighterState.LIGHT_PUNCH, time);
         } else if (control.isMediumPunch(this.playerId)) {
             this.changeState(FighterState.MEDIUM_PUNCH, time);
         } else if (control.isHeavyPunch(this.playerId)) {
@@ -731,9 +732,8 @@ export class Fighter {
 
     draw(context, camera) {
         const [frameKey] = this.animations[this.currentState][this.animationFrame];
-
         const [[
-            [x, y, width, height],
+            [frameX, frameY, frameWidth, frameHeight],
             [originX, originY],
         ]] = this.frames.get(frameKey);
 
@@ -741,11 +741,11 @@ export class Fighter {
 
         context.drawImage(
             this.image,
-            x, y,
-            width, height,
-            Math.floor((this.position.x - this.hurtShake - camera.position.x) * this.direction) - originX,
-            Math.floor(this.position.y - camera.position.y) - originY,
-            width, height
+            frameX, frameY,
+            frameWidth, frameHeight,
+            Math.floor((this.position.x - this.hurtShake - camera.position.x) * this.direction - originX),
+            Math.floor(this.position.y - camera.position.y - originY),
+            frameWidth, frameHeight
         );
 
         context.setTransform(1, 0, 0, 1, 0, 0);

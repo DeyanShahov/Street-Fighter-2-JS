@@ -47,8 +47,8 @@ export class BattleScene {
         }
     }
 
-    addEntity(EntityClass, ...args) {
-        this.entities.push(new EntityClass(...args, this.removeEntity.bind(this)));
+    addEntity(EntityClass, time, ...args) {
+        this.entities.push(new EntityClass(...args, time, this.removeEntity.bind(this)));
     }
 
     removeEntity(entity) {
@@ -83,7 +83,7 @@ export class BattleScene {
     getFighterEntity(fighterState, index) {
         const FighterEntityClass = this.getFighterEntityClass(fighterState.id);
 
-        return new FighterEntityClass(index, this.handleAttackHit.bind(this));
+        return new FighterEntityClass(index, this.handleAttackHit.bind(this), this.addEntity.bind(this));
     }
 
     getFighterEntityClass(id) {
@@ -126,8 +126,8 @@ export class BattleScene {
     }
 
     update(time, context) {
-        this.updateFighters(time, context);
         this.updateShadows(time, context);
+        this.updateFighters(time, context);
         this.stage.update(time);
         this.updateEntities(time, context);
         this.camera.update(time, context);
@@ -161,8 +161,8 @@ export class BattleScene {
 
     draw(context) {
         this.stage.drawBackground(context, this.camera);
-        this.drawFighters(context);
         this.drawShadows(context);
+        this.drawFighters(context);
         this.drawEntities(context);
         this.stage.drawForeground(context, this.camera);
         this.drawOverlays(context);

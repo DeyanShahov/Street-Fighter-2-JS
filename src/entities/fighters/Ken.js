@@ -1,11 +1,20 @@
+import { Control } from '../../constants/control.js';
 import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY } from '../../constants/fighters.js';
+import { playSound } from '../../engine/soundHandler.js';
+import { Fireball } from '../special/Fireball.js';
 import { Fighter } from './Fighter.js';
 
 export class Ken extends Fighter {
-    constructor(playerId, onAttackHit) {
+    constructor(playerId, onAttackHit, addEntity) {
         super(playerId, onAttackHit);
 
         this.image = document.querySelector('img[alt="Ken"]');
+        this.voiceHadouken = document.querySelector('audio#sound-ken-voice-hadouken');
+
+        this.gravity = 1000;
+
+        this.fireball = { fired: false, strength: undefined };
+        this.addEntity = addEntity;
 
         this.frames = new Map([
             // Idle Stance
@@ -107,6 +116,14 @@ export class Ken extends Fighter {
             ['stun-1', [[[857, 4456, 67, 90], [28, 85]], PushBox.IDLE, [[8, -87, 28, 18], [-16, -75, 40, 46], [-26, -31, 40, 32]]]],
             ['stun-2', [[[783, 4457, 65, 89], [28, 87]], PushBox.IDLE, [[-9, -89, 28, 18], [-23, -75, 40, 46], [-26, -31, 40, 32]]]],
             ['stun-3', [[[686, 4460, 77, 87], [35, 88]], PushBox.IDLE, [[-22, -91, 28, 18], [-30, -72, 42, 40], [-26, -31, 40, 32]]]],
+
+
+            // Hadouken
+            ['special-1', [[[862, 3681, 74, 90], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
+            ['special-2', [[[768, 3687, 85, 84], [25, 83]], PushBox.IDLE, HurtBox.IDLE]],
+            ['special-3', [[[655, 3690, 90, 81], [25, 81]], PushBox.IDLE, HurtBox.PUNCH]],
+            ['special-4', [[[528, 3694, 106, 77], [23, 76]], PushBox.IDLE, [[38, -79, 26, 18], [21, -65, 40, 38], [-12, -30, 78, 30]]]],
+
         ]);
 
         this.animations = {
@@ -220,8 +237,12 @@ export class Ken extends Fighter {
                 ['hit-stomach-2', 9], ['hit-stomach-2', FrameDelay.TRANSITION],
             ],
             [FighterState.HURT_BODY_HEAVY]: [
-                ['hit-stomach-2', FIGHTER_HURT_DELAY], ['hit-stomach-2', 3], ['hit-stomach-3', 4], 
+                ['hit-stomach-2', FIGHTER_HURT_DELAY], ['hit-stomach-2', 3], ['hit-stomach-3', 4],
                 ['hit-stomach-4', 4], ['stun-3', 9], ['stun-3', FrameDelay.TRANSITION],
+            ],
+            [FighterState.SPECIAL_1]: [
+                ['special-1', 2], ['special-2', 8], ['special-3', 2], ['special-4', 40],
+                ['special-4', FrameDelay.TRANSITION],
             ],
         };
 
@@ -235,6 +256,31 @@ export class Ken extends Fighter {
             jump: -420,
         };
 
-        this.gravity = 1000;
+        this.states[FighterState.SPECIAL_1] = {
+            init: this.handleHadoukenInit.bind(this),
+            update: this.handleHadoukenState.bind(this),
+            shadow: [1.6, 1, 22, 0],
+            validFrom: [
+                FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.IDLE_TURN,
+                FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP, FighterState.CROUCH_TURN,
+            ],
+        };
+
+        this.states[FighterState.IDLE].validFrom = [...this.states[FighterState.IDLE].validFrom, FighterState.SPECIAL_1];    
+    }
+
+    handleHadoukenInit() {
+        this.resetVelocities();
+        playSound(this.voiceHadouken);
+        this.fireball = { fired: false, strength: Control.MEDIUM_PUNCH };
+    }
+
+    handleHadoukenState(time) {
+        if ( !this.fireball.fired && this.animationFrame === 3) {
+            this.fireball.fired = true;
+            this.addEntity(Fireball, time, this, this.fireball.strength);
+        }
+        if (!this.isAnimationCompleted()) return;
+        this.changeState(FighterState.IDLE, time);
     }
 }
