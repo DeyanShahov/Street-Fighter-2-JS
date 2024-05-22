@@ -1,8 +1,8 @@
 import { HitSplash } from './HitSplash.js';
 
 export class LightHitSplash extends HitSplash {
-    constructor(x, y, playerId, onEnd) {
-        super(x, y, playerId, onEnd);
+    constructor(args, time, entityList) {
+        super(args, time, entityList);
 
         this.frames = [
             // Player 1
@@ -17,13 +17,5 @@ export class LightHitSplash extends HitSplash {
             [[199, 15, 13, 11], [7, 7]],
             [[219, 10, 20, 19], [11, 11]],
         ];
-    }
-
-    update(time) {
-        super.update(time);
-    }
-
-    draw(context, camera) {
-        super.draw(context, camera);
     }
 }

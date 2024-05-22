@@ -80,8 +80,8 @@ export function isKeyPressed(code) {
     return false;
 }
 
-export const isButtonDown = (padId, button) => gamePads.get(padId)?.buttons[button].pressed;
-export const isButtonUp = (padId, button) => !gamePads.get(padId)?.buttons[button].pressed;
+export const isButtonDown = (padId, button) => gamePads.get(padId)?.buttons[button].pressed ?? false;
+export const isButtonUp = (padId, button) => !gamePads.get(padId)?.buttons[button].pressed ?? false;
 
 export function isButtonPressed(padId, button) {
     const key = `${padId}-${button}`;

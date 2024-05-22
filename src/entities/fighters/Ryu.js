@@ -1,11 +1,11 @@
 import { Control } from '../../constants/control.js';
-import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY } from '../../constants/fighters.js';
+import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY, SpecialMoveDirection, SpecialMoveButton } from '../../constants/fighters.js';
 import { playSound } from '../../engine/soundHandler.js';
 import { Fireball } from '../special/Fireball.js';
 import { Fighter } from './Fighter.js';
 
 export class Ryu extends Fighter {
-    constructor(playerId, onAttackHit, addEntity) {
+    constructor(playerId, onAttackHit, entityList) {
         super(playerId, onAttackHit);
 
         this.image = document.querySelector('img[alt="Ryu"]');
@@ -14,7 +14,7 @@ export class Ryu extends Fighter {
         this.gravity = 1000;
 
         this.fireball = { fired: false, strength: undefined };
-        this.addEntity = addEntity;
+        this.entityList = entityList;
 
         this.frames = new Map([
             // Idle Stance
@@ -256,6 +256,17 @@ export class Ryu extends Fighter {
             jump: -420,
         };
 
+        this.specialMoves = [
+            {
+                state: FighterState.SPECIAL_1,
+                sequence: [
+                    SpecialMoveDirection.DOWN, SpecialMoveDirection.FORWARD_DOWN,
+                    SpecialMoveDirection.FORWARD, SpecialMoveButton.ANY_PUNCH
+                ],
+                cursor: 0,
+            },
+        ];
+
 
         this.states[FighterState.SPECIAL_1] = {
             init: this.handleHadoukenInit.bind(this),
@@ -270,16 +281,16 @@ export class Ryu extends Fighter {
         this.states[FighterState.IDLE].validFrom = [...this.states[FighterState.IDLE].validFrom, FighterState.SPECIAL_1];   
     }
 
-    handleHadoukenInit() {
+    handleHadoukenInit(_, strength) {
         this.resetVelocities();
         playSound(this.voiceHadouken);
-        this.fireball = { fired: false, strength: Control.MEDIUM_PUNCH };
+        this.fireball = { fired: false, strength };
     }
 
     handleHadoukenState(time) {
         if ( !this.fireball.fired && this.animationFrame === 3) {
             this.fireball.fired = true;
-            this.addEntity(Fireball, time, this, this.fireball.strength);
+            this.entityList.add.call(this.entityList, Fireball, time, this, this.fireball.strength);
         }
         if (!this.isAnimationCompleted()) return;
         this.changeState(FighterState.IDLE, time);

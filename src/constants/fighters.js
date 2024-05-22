@@ -88,6 +88,23 @@ export const FighterState = {
     SPECIAL_1: 'special-1',
 };
 
+export const SpecialMoveDirection = {
+    NONE: 'none',
+    UP : 'up',
+    DOWN: 'down',
+    BACKWARD: 'backward',
+    BACKWARD_UP: 'backward_up',
+    BACKWARD_DOWN: 'backward_down',
+    FORWARD: 'forward',
+    FORWARD_UP: 'forward_up',
+    FORWARD_DOWN: 'forward_down',
+};
+
+export const SpecialMoveButton = {
+    ANY_PUNCH: 'any-punch',
+    ANY_KICK: 'any-kick',
+};
+
 export const FrameDelay = {
     FREEZE: 0,
     TRANSITION: -1,

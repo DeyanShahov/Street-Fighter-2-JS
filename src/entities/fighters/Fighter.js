@@ -19,6 +19,7 @@ import { FRAME_TIME } from '../../constants/game.js';
 import { gameState } from '../../state/gameState.js';
 import { DEBUG_drawCollisionInfoBoxes, DEBUG_logHit } from '../../utils/fighterDebug.js';
 import { playSound, stopSound } from '../../engine/soundHandler.js';
+import { hasSpecialMoveBeenExecuted } from '../../engine/controlHistory.js';
 
 
 export class Fighter {
@@ -309,15 +310,15 @@ export class Fighter {
     }
 
 
-    changeState(newState, time) {
-        if (!this.states[newState].validFrom.includes(this.currentState)) {
-            console.warn(`Illegal transition from "${this.currentState}" to "${newState}"`);
-        }
+    changeState(newState, time, args) {
+        // if (!this.states[newState].validFrom.includes(this.currentState)) {
+        //     console.warn(`Illegal transition from "${this.currentState}" to "${newState}"`);
+        // }
 
         this.currentState = newState;
         this.animationFrame = 0;
 
-        this.states[this.currentState].init(time);
+        this.states[this.currentState].init(time, args);
     }
 
     resetVelocities() {
@@ -450,8 +451,8 @@ export class Fighter {
         } else if (control.isForward(this.playerId, this.direction)) {
             this.changeState(FighterState.WALK_FORWARD, time);
         } else if (control.isLightPunch(this.playerId)) {
-            this.changeState(FighterState.SPECIAL_1, time);
-            //this.changeState(FighterState.LIGHT_PUNCH, time);
+            //this.changeState(FighterState.SPECIAL_1, time);
+            this.changeState(FighterState.LIGHT_PUNCH, time);
         } else if (control.isMediumPunch(this.playerId)) {
             this.changeState(FighterState.MEDIUM_PUNCH, time);
         } else if (control.isHeavyPunch(this.playerId)) {
@@ -588,12 +589,16 @@ export class Fighter {
         this.changeState(FighterState.IDLE, time);
     }
 
-    handleAttackHit(time, attackStrength, hitLocation) {
-        const newState = this.getHitState(attackStrength, hitLocation);
+    handleAttackHit(time, attackStrength, attackType, hitPosition, hurtLocation) {
+        const newState = this.getHitState(attackStrength, hurtLocation);
         const { velocity, friction } = FighterAttackBasaData[attackStrength].slide;
 
         this.slideVelocity = velocity;
         this.slideFriction = friction;
+        this.attackStruck = true;
+        
+        playSound(this.soundHits[attackStrength][attackType]);
+        this.onAttackHit(time, this.opponent.playerId, this.playerId, hitPosition, attackStrength);
         this.changeState(newState, time);
     }
 
@@ -677,8 +682,7 @@ export class Fighter {
             if (!boxOverlap(actualHitBox, actualOpponentHurtBox)) return;
 
             stopSound(this.soundAttacks[attackStrength]);
-            playSound(this.soundHits[attackStrength][attackType]);
-
+         
             const hitPosition = {
                 x: (actualHitBox.x + (actualHitBox.width / 2) + actualOpponentHurtBox.x + (actualOpponentHurtBox.width / 2)) / 2,
                 y: (actualHitBox.y + (actualHitBox.height / 2) + actualOpponentHurtBox.y + (actualOpponentHurtBox.height / 2)) / 2,
@@ -686,12 +690,10 @@ export class Fighter {
             hitPosition.x -= 4 - Math.random() * 8;
             hitPosition.y -= 4 - Math.random() * 8;
 
-            this.onAttackHit(time, this.playerId, this.opponent.playerId, hitPosition, this.states[this.currentState].attackStrength);
+           
 
             DEBUG_logHit(this, gameState, attackStrength, hurtLoacation);
-
-            this.opponent.handleAttackHit(time, attackStrength, hurtLoacation);
-            this.attackStruck = true;
+            this.opponent.handleAttackHit(time, attackStrength, attackType, hitPosition, hurtLoacation);
             return;
         }
     }
@@ -719,9 +721,18 @@ export class Fighter {
         this.position.y += this.velocity.y * time.secondsPassed;
     }
 
+    updateSpecialMoves(time) {
+        for (const specialMove of this.specialMoves) {
+            const resultArgs = hasSpecialMoveBeenExecuted(specialMove, this.playerId, time);
+
+            if (resultArgs) this.changeState(specialMove.state, time, resultArgs);
+        }
+    }
+
 
     update(time, context, camera) {
         this.states[this.currentState].update(time, context);
+        this.updateSpecialMoves(time);
         this.updateSlide(time);
         this.updatePosition(time);
         this.updateAnimation(time);
