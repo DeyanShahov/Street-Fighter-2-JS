@@ -228,8 +228,6 @@ export class Fighter {
                 validFrom: HurtStateValidForm,
             },
         };
-
-        //this.changeState(FighterState.IDLE);
     }
 
     soundAttacks = {
@@ -451,7 +449,6 @@ export class Fighter {
         } else if (control.isForward(this.playerId, this.direction)) {
             this.changeState(FighterState.WALK_FORWARD, time);
         } else if (control.isLightPunch(this.playerId)) {
-            //this.changeState(FighterState.SPECIAL_1, time);
             this.changeState(FighterState.LIGHT_PUNCH, time);
         } else if (control.isMediumPunch(this.playerId)) {
             this.changeState(FighterState.MEDIUM_PUNCH, time);

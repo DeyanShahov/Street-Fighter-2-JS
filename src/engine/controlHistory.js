@@ -89,7 +89,7 @@ export function pollControl(time, id, direction) {
 
     if (!isLastSnapshotDifferent(currentControlShapshot, id)) return;
 
-    if (id === 0) console.log(currentControlShapshot);
+    //if (id === 0) console.log(currentControlShapshot);
 
     controlHistory[id].unshift(currentControlShapshot);
     if (controlHistory[id].length >= HISTORY_CAP) controlHistory[id].pop();

@@ -10,8 +10,8 @@ export class HitSplash {
         this.entityList = entityList;
 
         this.frames = [];
-        this.animationFrame = -1;
-        this.animationTimer = 0;
+        this.animationFrame = 0;
+        this.animationTimer = time.previous;
     }
 
     update(time) {
@@ -19,8 +19,7 @@ export class HitSplash {
         this.animationFrame += 1;
         this.animationTimer = time.previous;
 
-        //if ( this.animationFrame >= 4) this.entityList.remove(this);
-        if ( this.animationFrame >= 4) this.entityList.remove(this.entityList, this);
+        if ( this.animationFrame >= 4) this.entityList.remove(this);
     }
 
     draw(context, camera) {

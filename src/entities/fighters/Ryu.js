@@ -290,7 +290,7 @@ export class Ryu extends Fighter {
     handleHadoukenState(time) {
         if ( !this.fireball.fired && this.animationFrame === 3) {
             this.fireball.fired = true;
-            this.entityList.add.call(this.entityList, Fireball, time, this, this.fireball.strength);
+            this.entityList.add(Fireball, time, this, this.fireball.strength);
         }
         if (!this.isAnimationCompleted()) return;
         this.changeState(FighterState.IDLE, time);

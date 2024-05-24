@@ -23,7 +23,7 @@ export class BattleScene {
         this.entities = new EntityList();
 
         this.overlays = [
-            new StatusBar(this.fighters),
+            new StatusBar(),
             new FpsCounter(),
         ];
 
@@ -59,9 +59,15 @@ export class BattleScene {
         this.fighterDrawOrder = [opponentId, playerId];
         if (!position) return;
 
-        this.entities.add(this.getHitSplashClass(strength), position.x, position.y, playerId);
+        this.entities.add(this.getHitSplashClass(strength), time, position.x, position.y, playerId);
     }
 
+
+    getFighterEntity(fighterState, index) {
+        const FighterEntityClass = this.getFighterEntityClass(fighterState.id);
+
+        return new FighterEntityClass(index, this.handleAttackHit.bind(this), this.entities);
+    }
 
 
     getFighterEntities() {
@@ -73,12 +79,7 @@ export class BattleScene {
         return fighterEntities;
     }
 
-    getFighterEntity(fighterState, index) {
-        const FighterEntityClass = this.getFighterEntityClass(fighterState.id);
-
-        return new FighterEntityClass(index, this.handleAttackHit.bind(this), this.entities);
-    }
-
+   
     getFighterEntityClass(id) {
         switch (id) {
             case FighterId.RYU:
@@ -107,14 +108,12 @@ export class BattleScene {
             shadow.update(time, context, this.camera);
         }
     }
-
   
     updateOverlays(time, context) {
         for (const overlay of this.overlays) {
             overlay.update(time, context, this.camera);
         }
     }
-
 
     update(time, context) {
         this.updateShadows(time, context);
@@ -124,7 +123,6 @@ export class BattleScene {
         this.camera.update(time, context);
         this.updateOverlays(time, context);
     }
-
 
     drawFighters(context) {
         for (const fighterId of this.fighterDrawOrder) {
@@ -137,8 +135,6 @@ export class BattleScene {
             shadow.draw(context, this.camera);
         }
     }
-
-   
 
     drawOverlays(context) {
         for (const overlay of this.overlays) {
