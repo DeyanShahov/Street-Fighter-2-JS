@@ -10,7 +10,7 @@ export class Ryu extends Fighter {
 
         this.image = document.querySelector('img[alt="Ryu"]');
         this.voiceHadouken = document.querySelector('audio#sound-ryu-voice-hadouken');
-        
+
         this.gravity = 1000;
 
         this.fireball = { fired: false, strength: undefined };
@@ -277,8 +277,8 @@ export class Ryu extends Fighter {
                 FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP, FighterState.CROUCH_TURN,
             ],
         };
-
-        this.states[FighterState.IDLE].validFrom = [...this.states[FighterState.IDLE].validFrom, FighterState.SPECIAL_1];   
+        
+        this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_1);
     }
 
     handleHadoukenInit(_, strength) {
@@ -288,7 +288,7 @@ export class Ryu extends Fighter {
     }
 
     handleHadoukenState(time) {
-        if ( !this.fireball.fired && this.animationFrame === 3) {
+        if (!this.fireball.fired && this.animationFrame === 3) {
             this.fireball.fired = true;
             this.entityList.add(Fireball, time, this, this.fireball.strength);
         }

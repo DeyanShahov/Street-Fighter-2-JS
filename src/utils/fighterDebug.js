@@ -1,4 +1,4 @@
-function drawCross(context, camera, position, color) {
+export function drawCross(context, camera, position, color) {
     context.beginPath();
     context.strokeStyle = color;
     context.moveTo(Math.floor(position.x - camera.position.x) - 4, Math.floor(position.y - camera.position.y) - 0.5);
@@ -8,7 +8,7 @@ function drawCross(context, camera, position, color) {
     context.stroke();
 }
 
-function drawBox(context, camera, position, direction, dimensions, color) {
+export function drawBox(context, camera, position, direction, dimensions, color) {
     if (!Array.isArray(dimensions)) return;
 
     const [x = 0, y = 0, width = 0, height = 0] = dimensions;

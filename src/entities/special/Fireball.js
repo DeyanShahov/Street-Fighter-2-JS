@@ -1,7 +1,8 @@
-import { FighterAttackStrength, FighterAttackType, FighterHurtBox } from '../../constants/fighters.js';
+import { FighterAttackStrength, FighterAttackType, FighterHurtBox, FighterHurtBy } from '../../constants/fighters.js';
 import { FireballCollidedState, FireballState, fireballVelocity } from '../../constants/fireball.js';
-import { FRAME_TIME } from '../../constants/game.js';
+import { DEBUG_ENABLE, FRAME_TIME, SCREEN_WIDTH } from '../../constants/game.js';
 import { boxOverlap, getActualBoxDimensions } from '../../utils/collisions.js';
+import * as DEBUG from '../../utils/fighterDebug.js'
 
 const frames = new Map([
     ['hadoken-fireball-1', [[[473, 3699, 43, 32], [25, 16]], [-15, -13, 30, 24], [-28, -20, 56, 38]]],
@@ -83,7 +84,7 @@ export class Fireball {
 
         this.position.x += (this.velocity * this.direction) * time.secondsPassed;
 
-        if (this.position.x - camera.position.x > 384 + 56 || this.position.x - camera.position.x < -56) {
+        if (this.position.x - camera.position.x > SCREEN_WIDTH + 56 || this.position.x - camera.position.x < -56) {
             this.entityList.remove(this);
         }
 
@@ -96,7 +97,10 @@ export class Fireball {
 
         if (hasCollided !== FireballCollidedState.OPPONENT) return;
 
-        this.fighter.opponent.handleAttackHit(time, FighterAttackStrength.HEAVY, FighterAttackType.PUNCH, undefined, FighterHurtBox.BODY);
+        this.fighter.opponent.handleAttackHit(
+            time, FighterAttackStrength.HEAVY, FighterAttackType.PUNCH, 
+            undefined, FighterHurtBox.BODY, FighterHurtBy.FIREBALL
+        );
     }
 
     updateAnimation(time) {
@@ -119,10 +123,12 @@ export class Fireball {
 
     draw(context, camera) {
         const [frameKey] = animations[this.state][this.animationFrame];
-        const [[
+        const [
+            [
             [frameX, frameY, frameWidth, frameHeight],
             [originX, originY],
-        ]] = frames.get(frameKey);
+            ], collisionDimension,
+        ] = frames.get(frameKey);
 
         context.scale(this.direction, 1);
 
@@ -136,5 +142,10 @@ export class Fireball {
         );
 
         context.setTransform(1, 0, 0, 1, 0, 0);
+
+        if (!DEBUG_ENABLE) return;
+
+        DEBUG.drawBox(context, camera, this.position, this.direction, collisionDimension, '#FF0000');
+        DEBUG.drawCross(context, camera, this.position, '#FFF');
     }
 }

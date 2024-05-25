@@ -69,7 +69,7 @@ Moves
     Add crouching moves
     Add throwing moves
     Add blocking moves
-    Add Hadoken special moves
+    Add Hadoken special moves   - OK
     Add Tatsumaki Senpukyaku special moves
     Add Shoryuken special move
 
@@ -92,6 +92,6 @@ State
     Battle state
 
 Sound and Music
-    Add background music      - NOW
-    Add attack music          - NOW
-    Add special move sounds
+    Add background music      - OK
+    Add attack music          - OK
+    Add special move sounds   - OK

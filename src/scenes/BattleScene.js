@@ -7,7 +7,7 @@ import { StatusBar } from '../entities/overlays/StatusBar.js';
 import { KenStage } from '../entities/stage/KenStage.js';
 import { gameState } from '../state/gameState.js';
 import { LightHitSplash, MediumHitSplash, HeavyHitSplash, Shadow} from '../entities/fighters/shared/index.js'
-import { FRAME_TIME } from '../constants/game.js';
+import { FRAME_TIME, SCREEN_WIDTH } from '../constants/game.js';
 import { EntityList } from '../engine/EntityList.js';
 import { pollControl } from '../engine/controlHistory.js';
 
@@ -32,7 +32,7 @@ export class BattleScene {
 
     startRound() {
         this.fighters = this.getFighterEntities();
-        this.camera = new Camera(STAGE_MID_POINT + STAGE_PADDING - 192, 16, this.fighters);
+        this.camera = new Camera(STAGE_MID_POINT + STAGE_PADDING - (SCREEN_WIDTH / 2), 16, this.fighters);
         this.shadows = this.fighters.map(fighter => new Shadow(fighter));
     }
 
