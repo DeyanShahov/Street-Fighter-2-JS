@@ -1,6 +1,7 @@
 import { pollGamepads, registerGamepadEvents, registerKeyboardEvents } from './engine/InputHandler.js';
 import { getContext } from './utils/context.js';
 import { BattleScene } from './scenes/BattleScene.js';
+import { DEBUG_ENABLE } from './constants/game.js';
 
 export class StreetFighterGame{
     context = getContext();

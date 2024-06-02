@@ -1,4 +1,4 @@
-import { FIGHTER_HURT_DELAY, FighterAttackBasaData, FighterAttackStrength, FighterId } from '../constants/fighters.js';
+import { FIGHTER_HURT_DELAY, FighterAttackBasaData, FighterAttackStrength, FighterHurtBy, FighterId } from '../constants/fighters.js';
 import { STAGE_MID_POINT, STAGE_PADDING } from '../constants/stage.js';
 import { Camera } from '../engine/Camera.js';
 import { Ken, Ryu } from '../entities/fighters/index.js';
@@ -10,6 +10,7 @@ import { LightHitSplash, MediumHitSplash, HeavyHitSplash, Shadow} from '../entit
 import { FRAME_TIME, SCREEN_WIDTH } from '../constants/game.js';
 import { EntityList } from '../engine/EntityList.js';
 import { pollControl } from '../engine/controlHistory.js';
+import { FireballBlockReduction } from '../constants/fireball.js';
 
 export class BattleScene {
     fighters = [];
@@ -51,9 +52,15 @@ export class BattleScene {
 
    
 
-    handleAttackHit(time, playerId, opponentId, position, strength) {
-        gameState.fighters[playerId].score += FighterAttackBasaData[strength].score;
-        gameState.fighters[opponentId].hitPoints -= FighterAttackBasaData[strength].damage;
+    handleAttackHit(time, playerId, opponentId, position, strength, isHitBlocked, hurtBy) {
+        if (!isHitBlocked) {
+            gameState.fighters[playerId].score += FighterAttackBasaData[strength].score;
+            gameState.fighters[opponentId].hitPoints -= FighterAttackBasaData[strength].damage;
+        }
+
+        if (isHitBlocked && hurtBy === FighterHurtBy.FIREBALL) {
+            gameState.fighters[opponentId].hitPoints -= FighterAttackBasaData[strength].damage * FireballBlockReduction;
+        }
 
         this.hurtTimer = time.previous + (FIGHTER_HURT_DELAY * FRAME_TIME);
         this.fighterDrawOrder = [opponentId, playerId];

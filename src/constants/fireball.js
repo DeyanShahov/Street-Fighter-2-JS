@@ -16,3 +16,5 @@ export const FireballCollidedState = {
     OPPONENT: 'opponent',
     FIREBALL: 'fireball',
 };
+
+export const FireballBlockReduction = 0.1;

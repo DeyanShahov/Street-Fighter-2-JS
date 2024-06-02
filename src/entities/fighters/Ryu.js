@@ -123,6 +123,11 @@ export class Ryu extends Fighter {
             ['special-3', [[[210, 1424, 90, 84], [25, 81]], PushBox.IDLE, HurtBox.PUNCH]],
             ['special-4', [[[315, 1431, 106, 77], [23, 76]], PushBox.IDLE, [[38, -79, 26, 18], [21, -65, 40, 38], [-12, -30, 78, 30]]]],
 
+            // Upright Block
+            ['upright-block-1', [[[75, 14, 60, 89], [34, 86]], PushBox.IDLE, HurtBox.IDLE]],
+            ['upright-block-2', [[[9, 365, 64, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
+            // ['idle-1', [[[75, 14, 60, 89], [34, 86]], PushBox.IDLE, HurtBox.IDLE]],
+            // ['light-punch-1', [[[9, 365, 64, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
         ]);
 
         this.animations = {
@@ -180,8 +185,8 @@ export class Ryu extends Fighter {
                 ['crouch-turn-1', 33], ['crouch-turn-1', FrameDelay.TRANSITION],
             ],
             [FighterState.LIGHT_PUNCH]: [
-                ['light-punch-1', 2], ['light-punch-2', 2],
-                ['light-punch-1', 2], ['light-punch-1', FrameDelay.TRANSITION],
+                ['light-punch-1', 2], ['light-punch-2', 4],
+                ['light-punch-1', 4], ['light-punch-1', FrameDelay.TRANSITION],
             ],
             [FighterState.MEDIUM_PUNCH]: [
                 ['medium-punch-1', 1], ['medium-punch-2', 2], ['medium-punch-3', 4],
@@ -207,15 +212,15 @@ export class Ryu extends Fighter {
                 ['heavy-kick-4', 10], ['heavy-kick-5', 7],
                 ['heavy-kick-5', FrameDelay.TRANSITION],
             ],
-            [FighterState.HIT_FACE_LIGHT]: [
-                ['hit-face-1', 18], ['hit-face-2', FrameDelay.FREEZE],
-            ],
-            [FighterState.HIT_FACE_MEDIUM]: [
-                ['hit-face-1', 18], ['hit-face-2', 4], ['hit-face-3', FrameDelay.FREEZE],
-            ],
-            [FighterState.HIT_FACE_HEAVY]: [
-                ['hit-face-3', 18], ['hit-face-4', 7], ['stun-3', FrameDelay.FREEZE],
-            ],
+            // [FighterState.HIT_FACE_LIGHT]: [
+            //     ['hit-face-1', 18], ['hit-face-2', FrameDelay.FREEZE],
+            // ],
+            // [FighterState.HIT_FACE_MEDIUM]: [
+            //     ['hit-face-1', 18], ['hit-face-2', 4], ['hit-face-3', FrameDelay.FREEZE],
+            // ],
+            // [FighterState.HIT_FACE_HEAVY]: [
+            //     ['hit-face-3', 18], ['hit-face-4', 7], ['stun-3', FrameDelay.FREEZE],
+            // ],
             [FighterState.HURT_HEAD_LIGHT]: [
                 ['hit-face-1', FIGHTER_HURT_DELAY], ['hit-face-1', 3],
                 ['hit-face-2', 8], ['hit-face-2', FrameDelay.TRANSITION],
@@ -243,6 +248,10 @@ export class Ryu extends Fighter {
             [FighterState.SPECIAL_1]: [
                 ['special-1', 2], ['special-2', 8], ['special-3', 2], ['special-4', 40],
                 ['special-4', FrameDelay.TRANSITION],
+            ],
+            [FighterState.UPRIGHT_BLOCK]: [
+                ['upright-block-1', 3], ['upright-block-2', 3],
+                ['upright-block-2', FrameDelay.FREEZE],
             ],
         };
 

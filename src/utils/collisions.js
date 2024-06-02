@@ -17,3 +17,7 @@ export function getActualBoxDimensions(position, direction, box) {
         height: box.height,
     };
 }
+
+export function getDistanceToOpponet(box1, box2) {
+    return Math.min(Math.abs(box1.x + box1.width - box2.x), Math.abs(box2.x + box2.width - box1.x));
+}

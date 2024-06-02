@@ -13,14 +13,16 @@ import {
     HurtStateValidForm,
     FighterAttackBasaData,
     FighterHurtBy,
+    BlockStyle,
 } from '../../constants/fighters.js';
-import { STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
-import { boxOverlap, getActualBoxDimensions, rectsOverlap } from '../../utils/collisions.js';
+import { DANGER_DISTANCE as DANGER_DISTANCE_TO_OPPONENT, STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
+import { boxOverlap, getActualBoxDimensions, getDistanceToOpponet, rectsOverlap } from '../../utils/collisions.js';
 import { DEBUG_ENABLE, FRAME_TIME, SCREEN_WIDTH } from '../../constants/game.js';
 import { gameState } from '../../state/gameState.js';
 import { DEBUG_drawCollisionInfoBoxes, DEBUG_logHit } from '../../utils/fighterDebug.js';
 import { playSound, stopSound } from '../../engine/soundHandler.js';
 import { hasSpecialMoveBeenExecuted } from '../../engine/controlHistory.js';
+import { Control } from '../../constants/control.js';
 
 
 export class Fighter {
@@ -29,6 +31,8 @@ export class Fighter {
         this.image = new Image();
 
         this.playerId = playerId;
+
+        this.blockStyle = BlockStyle.ON_ATTACK_BACKWARD;
 
         this.animations = {};
         this.animationFrame = 0;
@@ -55,6 +59,7 @@ export class Fighter {
         this.gravity = 0;
 
         this.attackStruck = false;
+        this.isInAttack = false;
 
         this.boxes = {
             push: { x: 0, y: 0, width: 0, height: 0 },
@@ -77,20 +82,21 @@ export class Fighter {
                     FighterState.CROUCH_DOWN, FighterState.JUMP_LAND, FighterState.IDLE_TURN,
                     FighterState.LIGHT_PUNCH, FighterState.MEDIUM_PUNCH, FighterState.HEAVY_PUNCH,
                     FighterState.LIGHT_KICK, FighterState.MEDIUM_KICK, FighterState.HEAVY_KICK,
+                    FighterState.UPRIGHT_BLOCK,
                 ],
             },
             [FighterState.WALK_FORWARD]: {
                 init: this.handleMoveInit.bind(this),
                 update: this.handleWalkForwardState.bind(this),
                 validFrom: [
-                    FighterState.IDLE, FighterState.WALK_BACKWARD
+                    FighterState.IDLE, FighterState.WALK_BACKWARD, FighterState.UPRIGHT_BLOCK,
                 ],
             },
             [FighterState.WALK_BACKWARD]: {
                 init: this.handleMoveInit.bind(this),
                 update: this.handleWalkBackwardState.bind(this),
                 validFrom: [
-                    FighterState.IDLE, FighterState.WALK_FORWARD
+                    FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.UPRIGHT_BLOCK,
                 ],
             },
             [FighterState.JUMP_START]: {
@@ -229,6 +235,11 @@ export class Fighter {
                 update: this.handleHurtState.bind(this),
                 validFrom: HurtStateValidForm,
             },
+            [FighterState.UPRIGHT_BLOCK]: {
+                init: this.handleUprightBlockInit.bind(this),
+                update: this.handleUprightBlockState.bind(this),
+                validFrom: [FighterState.WALK_BACKWARD],
+            },
         };
     }
 
@@ -334,6 +345,22 @@ export class Fighter {
         this.slideVelocity = 0;
     }
 
+    handleUprightBlockInit() {
+        this.resetVelocities();
+    }
+
+    handleUprightBlockState(time) {
+        if (this.blockStyle === BlockStyle.ON_ATTACK_BACKWARD) {
+            if (!control.isBackward(this.playerId, this.direction)) this.changeState(FighterState.IDLE, time);
+        } else {
+            if (!control.isControlDown(this.playerId, Control.LIGHT_PUNCH)
+                && !control.isControlDown(this.playerId, Control.MEDIUM_PUNCH)
+                && !control.isControlDown(this.playerId, Control.HEAVY_PUNCH)) {
+                this.changeState(FighterState.IDLE, time);
+            }
+        }
+    }
+
 
     handleIdleInit() {
         this.resetVelocities();
@@ -353,6 +380,7 @@ export class Fighter {
     handleStandartAttackInit() {
         this.resetVelocities();
         playSound(this.soundAttacks[this.states[this.currentState].attackStrength]);
+        this.isInAttack = true;
     }
 
 
@@ -495,18 +523,36 @@ export class Fighter {
         this.direction = this.getDirections();
     }
 
+
+    checkForBlockMechanics() {
+        return this.blockStyle === BlockStyle.ON_BACKWARD_ANY_PUNCH;
+    }
+
+
     handleWalkBackwardState(time) {
+        if (!this.checkForBlockMechanics()
+            && this.opponent.isInAttack
+            && this.checkDistanceForBlock()) {
+            this.changeState(FighterState.UPRIGHT_BLOCK, time);
+        }
+
         if (!control.isBackward(this.playerId, this.direction)) this.changeState(FighterState.IDLE, time);
         if (control.isUp(this.playerId)) this.changeState(FighterState.JUMP_START, time);
         if (control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_DOWN, time);
 
 
         if (control.isLightPunch(this.playerId)) {
-            this.changeState(FighterState.LIGHT_PUNCH, time);
+            this.checkForBlockMechanics()
+                ? this.changeState(FighterState.UPRIGHT_BLOCK, time)
+                : this.changeState(FighterState.LIGHT_PUNCH, time);
         } else if (control.isMediumPunch(this.playerId)) {
-            this.changeState(FighterState.MEDIUM_PUNCH, time);
+            this.checkForBlockMechanics()
+                ? this.changeState(FighterState.UPRIGHT_BLOCK, time)
+                : this.changeState(FighterState.MEDIUM_PUNCH, time);
         } else if (control.isHeavyPunch(this.playerId)) {
-            this.changeState(FighterState.HEAVY_PUNCH, time);
+            this.checkForBlockMechanics()
+                ? this.changeState(FighterState.UPRIGHT_BLOCK, time)
+                : this.changeState(FighterState.HEAVY_PUNCH, time);
         } else if (control.isLightKick(this.playerId)) {
             this.changeState(FighterState.LIGHT_KICK, time);
         } else if (control.isMediumKick(this.playerId)) {
@@ -552,11 +598,16 @@ export class Fighter {
         this.attackStruck = false;
     }
 
+    handleResteAttackState() {
+        this.isInAttack = false;
+    }
+
     handleLightPunchState(time) {
         if (this.animationFrame < 2) return;
         if (control.isLightPunch(this.playerId)) this.handleLightAttackReset();
 
         if (!this.isAnimationCompleted()) return;
+        this.handleResteAttackState();
         this.changeState(FighterState.IDLE, time);
     }
 
@@ -565,6 +616,7 @@ export class Fighter {
         //if (control.isMediumPunch(this.playerId)) this.animationFrame = 0;
 
         if (!this.isAnimationCompleted()) return;
+        this.handleResteAttackState();
         this.changeState(FighterState.IDLE, time);
     }
 
@@ -573,11 +625,13 @@ export class Fighter {
         if (control.isLightKick(this.playerId)) this.handleLightAttackReset();
 
         if (!this.isAnimationCompleted()) return;
+        this.handleResteAttackState();
         this.changeState(FighterState.IDLE, time);
     }
 
     handleMediumKickState(time) {
         if (!this.isAnimationCompleted()) return;
+        this.handleResteAttackState();
         this.changeState(FighterState.IDLE, time);
     }
 
@@ -590,7 +644,10 @@ export class Fighter {
     }
 
     handleAttackHit(time, attackStrength, attackType, hitPosition, hurtLocation, hurtBy) {
-        const newState = this.getHitState(attackStrength, hurtLocation);
+        const isHitBlocked = this.currentState === FighterState.UPRIGHT_BLOCK;
+        // Check for new state - Blocked or Hit 
+        const newState = isHitBlocked ? FighterState.UPRIGHT_BLOCK : this.getHitState(attackStrength, hurtLocation);
+
         const { velocity, friction } = FighterAttackBasaData[attackStrength].slide;
 
         this.hurtBy = hurtBy;
@@ -599,7 +656,7 @@ export class Fighter {
         this.attackStruck = true;
 
         playSound(this.soundHits[attackStrength][attackType]);
-        this.onAttackHit(time, this.opponent.playerId, this.playerId, hitPosition, attackStrength);
+        this.onAttackHit(time, this.opponent.playerId, this.playerId, hitPosition, attackStrength, isHitBlocked, hurtBy);
         this.changeState(newState, time);
     }
 
@@ -624,7 +681,7 @@ export class Fighter {
 
                 if ([
                     FighterState.IDLE, FighterState.CROUCH, FighterState.JUMP_UP,
-                    FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD,
+                    FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD, FighterState.UPRIGHT_BLOCK
                 ].includes(this.opponent.currentState)) {
                     this.opponent.position.x += FIGHTER_PUSH_FRICTION * time.secondsPassed;
                 }
@@ -639,7 +696,7 @@ export class Fighter {
 
                 if ([
                     FighterState.IDLE, FighterState.CROUCH, FighterState.JUMP_UP,
-                    FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD,
+                    FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD, FighterState.UPRIGHT_BLOCK
                 ].includes(this.opponent.currentState)) {
                     this.opponent.position.x -= FIGHTER_PUSH_FRICTION * time.secondsPassed;
                 }
@@ -665,6 +722,17 @@ export class Fighter {
     }
 
 
+    checkDistanceForBlock() {
+        const box = getActualBoxDimensions(this.position, this.direction, this.boxes.push);
+
+        const opponentBox = getActualBoxDimensions(this.opponent.position, this.opponent.direction, this.opponent.boxes.push);
+
+        const distanceToOpponentHitBox = getDistanceToOpponet(box, opponentBox);
+
+        return distanceToOpponentHitBox <= DANGER_DISTANCE_TO_OPPONENT;
+    }
+
+
     updateHitBoxCollided(time) {
         const { attackStrength, attackType } = this.states[this.currentState];
 
@@ -680,6 +748,7 @@ export class Fighter {
                 { x, y, width, height },
             );
 
+            // Check for not success attack
             if (!boxOverlap(actualHitBox, actualOpponentHurtBox)) return;
 
             stopSound(this.soundAttacks[attackStrength]);

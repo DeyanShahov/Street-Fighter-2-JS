@@ -15,6 +15,16 @@ export const FighterId = {
     KEN: 'Ken',
 }
 
+export const BlockStyle = {
+    ON_ATTACK_BACKWARD: 'on-attack-backward',
+    ON_BACKWARD_ANY_PUNCH: 'on-backward-any-punch',
+}
+
+// export const FighterCurrentStateType = {
+//     ATTACK: 'attack',
+//     DEFENCE: 'defence',
+// };
+
 export const FighterAttackType = {
     PUNCH: 'punch',
     KICK: 'kick',
@@ -92,6 +102,7 @@ export const FighterState = {
     HURT_BODY_MEDIUM: 'hurt-body-medium',
     HURT_BODY_HEAVY: 'hurt-body-heavy',
     SPECIAL_1: 'special-1',
+    UPRIGHT_BLOCK: 'upright-block',
 };
 
 export const SpecialMoveDirection = {

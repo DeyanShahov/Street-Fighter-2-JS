@@ -6,3 +6,5 @@ export const STAGE_MID_POINT = STAGE_WIDTH / 2;
 export const STAGE_PADDING = 256;
 
 export const SCROLL_BOUNDARY = 100;
+
+export const DANGER_DISTANCE = 100;

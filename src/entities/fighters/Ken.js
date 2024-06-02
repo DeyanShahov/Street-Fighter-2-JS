@@ -84,7 +84,7 @@ export class Ken extends Fighter {
             ['medium-punch-3', [[[657, 1509, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -85, 68, 14]]],
 
             // Heavy Punch
-            ['heavy-punch-1', [[[657, 1509, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -85, 76, 14]]],
+            ['heavy-punch-1', [[[657, 1509, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -85, 71, 14]]],
 
             // Light/Medium Kick
             ['light-kick-1', [[[863, 2384, 66, 92], [35, 92]], PushBox.IDLE, [[-41, -78, 20, 20], [-25, -78, 42, 42], [-11, -50, 42, 50]]]],
@@ -124,6 +124,9 @@ export class Ken extends Fighter {
             ['special-3', [[[655, 3690, 90, 81], [25, 81]], PushBox.IDLE, HurtBox.PUNCH]],
             ['special-4', [[[528, 3694, 106, 77], [23, 76]], PushBox.IDLE, [[38, -79, 26, 18], [21, -65, 40, 38], [-12, -30, 78, 30]]]],
 
+            // Upright Block
+            ['upright-block-1', [[[873, 4018, 63, 92], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
+            ['upright-block-2', [[[804, 4017, 64, 93], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
         ]);
 
         this.animations = {
@@ -243,6 +246,10 @@ export class Ken extends Fighter {
             [FighterState.SPECIAL_1]: [
                 ['special-1', 2], ['special-2', 8], ['special-3', 2], ['special-4', 40],
                 ['special-4', FrameDelay.TRANSITION],
+            ],
+            [FighterState.UPRIGHT_BLOCK]: [
+                ['upright-block-1', 3], ['upright-block-2', 3],
+                ['upright-block-2', FrameDelay.FREEZE],
             ],
         };
 
