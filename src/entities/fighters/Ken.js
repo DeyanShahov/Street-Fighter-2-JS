@@ -76,15 +76,15 @@ export class Ken extends Fighter {
 
             // Light Punch
             ['light-punch-1', [[[862, 1416, 64, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
-            ['light-punch-2', [[[749, 1416, 92, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE, [11, -85, 50, 18]]],
+            ['light-punch-2', [[[749, 1416, 92, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE, [11, -75, 50, 18]]],
 
             // Medium/Heavy Punch
             ['medium-punch-1', [[[865, 1510, 60, 94], [28, 91]], PushBox.IDLE, HurtBox.IDLE]],
             ['medium-punch-2', [[[782, 1509, 74, 95], [29, 92]], PushBox.IDLE, HurtBox.PUNCH]],
-            ['medium-punch-3', [[[657, 1509, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -85, 68, 14]]],
+            ['medium-punch-3', [[[657, 1509, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -75, 68, 14]]],
 
             // Heavy Punch
-            ['heavy-punch-1', [[[657, 1509, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -85, 71, 14]]],
+            ['heavy-punch-1', [[[657, 1509, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -75, 71, 14]]],
 
             // Light/Medium Kick
             ['light-kick-1', [[[863, 2384, 66, 92], [35, 92]], PushBox.IDLE, [[-41, -78, 20, 20], [-25, -78, 42, 42], [-11, -50, 42, 50]]]],
@@ -127,6 +127,10 @@ export class Ken extends Fighter {
             // Upright Block
             ['upright-block-1', [[[873, 4018, 63, 92], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
             ['upright-block-2', [[[804, 4017, 64, 93], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
+
+            // Crouch Light Punch
+            ['crouch-light-punch-1', [[[507, 398, 69, 97], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
+            ['crouch-light-punch-2', [[[749, 1416, 92, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE, [11, -85, 50, 18]]],
         ]);
 
         this.animations = {

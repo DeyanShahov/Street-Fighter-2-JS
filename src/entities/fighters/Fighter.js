@@ -14,6 +14,7 @@ import {
     FighterAttackBasaData,
     FighterHurtBy,
     BlockStyle,
+    FighterCurrntPosition,
 } from '../../constants/fighters.js';
 import { DANGER_DISTANCE as DANGER_DISTANCE_TO_OPPONENT, STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
 import { boxOverlap, getActualBoxDimensions, getDistanceToOpponet, rectsOverlap } from '../../utils/collisions.js';
@@ -23,6 +24,7 @@ import { DEBUG_drawCollisionInfoBoxes, DEBUG_logHit } from '../../utils/fighterD
 import { playSound, stopSound } from '../../engine/soundHandler.js';
 import { hasSpecialMoveBeenExecuted } from '../../engine/controlHistory.js';
 import { Control } from '../../constants/control.js';
+import { processHit } from '../../utils/hurtBoxChoice.js';
 
 
 export class Fighter {
@@ -39,6 +41,7 @@ export class Fighter {
         this.animationTimer = 0;
 
         this.currentState = FighterState.IDLE;
+        this.currentPosition = FighterCurrntPosition.FRONT;
         this.opponent = undefined;
         this.onAttackHit = onAttackHit;
 
@@ -138,7 +141,7 @@ export class Fighter {
             [FighterState.CROUCH]: {
                 init: () => { },
                 update: this.handleCrouchState.bind(this),
-                validFrom: [FighterState.CROUCH_DOWN, FighterState.CROUCH_TURN],
+                validFrom: [FighterState.CROUCH_DOWN, FighterState.CROUCH_TURN, FighterState.CROUCH_LIGHT_PUNCH],
             },
             [FighterState.CROUCH_DOWN]: {
                 init: this.handleCrouchDownInit.bind(this),
@@ -239,6 +242,13 @@ export class Fighter {
                 init: this.handleUprightBlockInit.bind(this),
                 update: this.handleUprightBlockState.bind(this),
                 validFrom: [FighterState.WALK_BACKWARD],
+            },
+            [FighterState.CROUCH_LIGHT_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
+                attackStrength: FighterAttackStrength.LIGHT,
+                init: this.handleStandartAttackInit.bind(this),
+                update: this.handleCrouchLightPunchState.bind(this),
+                validFrom: [FighterState.CROUCH],
             },
         };
     }
@@ -364,6 +374,7 @@ export class Fighter {
 
     handleIdleInit() {
         this.resetVelocities();
+        this.currentPosition = FighterCurrntPosition.FRONT;
         this.attackStruck = false;
     }
 
@@ -375,6 +386,7 @@ export class Fighter {
 
     handleCrouchDownInit() {
         this.resetVelocities();
+        this.currentPosition = FighterCurrntPosition.BOTTOM;
     }
 
     handleStandartAttackInit() {
@@ -410,6 +422,7 @@ export class Fighter {
 
     handleJumpStartInit() {
         this.resetVelocities();
+        this.currentPosition = FighterCurrntPosition.TOP;
     }
 
     handleJumpLandInit() {
@@ -568,6 +581,20 @@ export class Fighter {
     handleCrouchState(time) {
         if (!control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_UP, time);
 
+        if (control.isLightPunch(this.playerId)) {
+            this.changeState(FighterState.CROUCH_LIGHT_PUNCH, time);
+        } else if (control.isMediumPunch(this.playerId)) {
+            this.changeState(FighterState.MEDIUM_PUNCH, time);
+        } else if (control.isHeavyPunch(this.playerId)) {
+            this.changeState(FighterState.HEAVY_PUNCH, time);
+        } else if (control.isLightKick(this.playerId)) {
+            this.changeState(FighterState.LIGHT_KICK, time);
+        } else if (control.isMediumKick(this.playerId)) {
+            this.changeState(FighterState.MEDIUM_KICK, time);
+        } else if (control.isHeavyKick(this.playerId)) {
+            this.changeState(FighterState.HEAVY_KICK, time);
+        }
+
         const newDirection = this.getDirections();
 
         if (newDirection !== this.direction) {
@@ -599,6 +626,7 @@ export class Fighter {
     }
 
     handleResteAttackState() {
+        this.attackStruck = false;
         this.isInAttack = false;
     }
 
@@ -612,13 +640,20 @@ export class Fighter {
     }
 
     handleMediumPunchState(time) {
-        //if (this.animationFrame < 4) return;
-        //if (control.isMediumPunch(this.playerId)) this.animationFrame = 0;
-
         if (!this.isAnimationCompleted()) return;
         this.handleResteAttackState();
         this.changeState(FighterState.IDLE, time);
     }
+
+    handleCrouchLightPunchState(time) {
+        // if (this.animationFrame < 2) return;
+        // if (control.isLightPunch(this.playerId)) this.handleLightAttackReset();
+
+        if (!this.isAnimationCompleted()) return;
+        this.handleResteAttackState();
+        this.changeState(FighterState.CROUCH, time);
+    }
+
 
     handleLightKickState(time) {
         if (this.animationFrame < 2) return;
@@ -731,7 +766,7 @@ export class Fighter {
 
         return distanceToOpponentHitBox <= DANGER_DISTANCE_TO_OPPONENT;
     }
-
+  
 
     updateHitBoxCollided(time) {
         const { attackStrength, attackType } = this.states[this.currentState];
@@ -740,31 +775,47 @@ export class Fighter {
 
         const actualHitBox = getActualBoxDimensions(this.position, this.direction, this.boxes.hit);
 
-        for (const [hurtLoacation, hurtBox] of Object.entries(this.opponent.boxes.hurt)) {
+        let possibleHurtBoxs = [];
+
+        // Check for all hurt boxes on opponent
+        Object.entries(this.opponent.boxes.hurt).forEach(([hurtLoacation, hurtBox]) => {
             const [x, y, width, height] = hurtBox;
             const actualOpponentHurtBox = getActualBoxDimensions(
                 this.opponent.position,
                 this.opponent.direction,
                 { x, y, width, height },
             );
+            
+            // Check for success attack
+            if (boxOverlap(actualHitBox, actualOpponentHurtBox)) {
+                // Add succes attack to list 
+                possibleHurtBoxs.push({hurtLoacation, actualOpponentHurtBox});
+                // Stop free hit sount, for future succes attack
+                stopSound(this.soundAttacks[attackStrength]);
+            }
+        });
 
-            // Check for not success attack
-            if (!boxOverlap(actualHitBox, actualOpponentHurtBox)) return;
+        
 
-            stopSound(this.soundAttacks[attackStrength]);
+        if (possibleHurtBoxs.length == 0) return;
 
-            const hitPosition = {
-                x: (actualHitBox.x + (actualHitBox.width / 2) + actualOpponentHurtBox.x + (actualOpponentHurtBox.width / 2)) / 2,
-                y: (actualHitBox.y + (actualHitBox.height / 2) + actualOpponentHurtBox.y + (actualOpponentHurtBox.height / 2)) / 2,
-            };
-            hitPosition.x -= 4 - Math.random() * 8;
-            hitPosition.y -= 4 - Math.random() * 8;
+        const onlyLocationName = possibleHurtBoxs.map((obj) => obj.hurtLoacation);
 
-            if (DEBUG_ENABLE) DEBUG_logHit(this, gameState, attackStrength, hurtLoacation);
+        const batteredBox = processHit(onlyLocationName, this.currentPosition, this.opponent.currentPosition);
 
-            this.opponent.handleAttackHit(time, attackStrength, attackType, hitPosition, hurtLoacation, FighterHurtBy.FIGHTER);
-            return;
-        }
+        const targetBox = possibleHurtBoxs.find(obj => obj.hurtLoacation === batteredBox);
+
+        const hitPosition = {
+            x: (actualHitBox.x + (actualHitBox.width / 2) + targetBox.actualOpponentHurtBox.x + (targetBox.actualOpponentHurtBox.width / 2)) / 2,
+            y: (actualHitBox.y + (actualHitBox.height / 2) + targetBox.actualOpponentHurtBox.y + (targetBox.actualOpponentHurtBox.height / 2)) / 2,
+        };
+        hitPosition.x -= 4 - Math.random() * 8;
+        hitPosition.y -= 4 - Math.random() * 8;
+
+        console.log(`${gameState.fighters[this.playerId].id} position is ${this.currentPosition}.
+        ${gameState.fighters[this.opponent.playerId].id} position is ${this.opponent.currentPosition}`);
+        if (DEBUG_ENABLE) DEBUG_logHit(this, gameState, attackType, attackStrength, targetBox.hurtLoacation);
+        this.opponent.handleAttackHit(time, attackStrength, attackType, hitPosition, targetBox.hurtLoacation, FighterHurtBy.FIGHTER);    
     }
 
     updateHurtShake(time, delay) {

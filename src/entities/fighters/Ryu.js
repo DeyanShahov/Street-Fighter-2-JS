@@ -76,15 +76,15 @@ export class Ryu extends Fighter {
 
             // Light Punch
             ['light-punch-1', [[[9, 365, 64, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
-            ['light-punch-2', [[[98, 365, 92, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE, [11, -85, 50, 18]]],
+            ['light-punch-2', [[[98, 365, 92, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE, [11, -75, 50, 18]]],
 
             // Medium/Heavy Punch
             ['medium-punch-1', [[[6, 466, 60, 94], [29, 92]], PushBox.IDLE, HurtBox.IDLE]],
             ['medium-punch-2', [[[86, 465, 74, 95], [29, 92]], PushBox.IDLE, HurtBox.PUNCH]],
-            ['medium-punch-3', [[[175, 465, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -85, 68, 14]]],
+            ['medium-punch-3', [[[175, 465, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -75, 68, 14]]],
 
             // Heavy Punch
-            ['heavy-punch-1', [[[175, 465, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -85, 78, 14]]],
+            ['heavy-punch-1', [[[175, 465, 108, 94], [24, 92]], PushBox.IDLE, HurtBox.PUNCH, [17, -75, 70, 14]]],
 
             // Light/Medium Kick
             ['light-kick-1', [[[87, 923, 66, 92], [46, 93]], PushBox.IDLE, [[-33, -96, 30, 18], [-41, -79, 42, 38], [-32, -52, 44, 50]]]],
@@ -126,8 +126,10 @@ export class Ryu extends Fighter {
             // Upright Block
             ['upright-block-1', [[[75, 14, 60, 89], [34, 86]], PushBox.IDLE, HurtBox.IDLE]],
             ['upright-block-2', [[[9, 365, 64, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
-            // ['idle-1', [[[75, 14, 60, 89], [34, 86]], PushBox.IDLE, HurtBox.IDLE]],
-            // ['light-punch-1', [[[9, 365, 64, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
+
+            // Crouch Light Punch
+            ['crouch-light-punch-1', [[[507, 398, 69, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-light-punch-2', [[[590, 400, 95, 60], [31, 57]], PushBox.CROUCH, HurtBox.CROUCH, [13, -50, 51, 18]]],
         ]);
 
         this.animations = {
@@ -252,6 +254,10 @@ export class Ryu extends Fighter {
             [FighterState.UPRIGHT_BLOCK]: [
                 ['upright-block-1', 3], ['upright-block-2', 3],
                 ['upright-block-2', FrameDelay.FREEZE],
+            ],
+            [FighterState.CROUCH_LIGHT_PUNCH]: [
+                ['crouch-light-punch-1', 4], ['crouch-light-punch-2', 4],
+                ['crouch-light-punch-1', 6], ['crouch-light-punch-1', FrameDelay.TRANSITION],
             ],
         };
 

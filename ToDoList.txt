@@ -68,7 +68,7 @@ Moves
     Add air moves
     Add crouching moves
     Add throwing moves
-    Add blocking moves
+    Add blocking moves      - OK
     Add Hadoken special moves   - OK
     Add Tatsumaki Senpukyaku special moves
     Add Shoryuken special move
@@ -84,6 +84,7 @@ Game mechanics
     Add camera system      - OK
     Introduce a scene system - OK
     Add global state to the Status bar - OK
+    Add choice bwtween multy hurt boxes - OK 
     Global player state
 
 State

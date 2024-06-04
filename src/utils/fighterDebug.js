@@ -1,3 +1,5 @@
+import { FighterAttackBasaData } from '../constants/fighters.js';
+
 export function drawCross(context, camera, position, color) {
     context.beginPath();
     context.strokeStyle = color;
@@ -51,6 +53,8 @@ export function DEBUG_drawCollisionInfoBoxes(fighter, context, camera) {
     drawCross(context, camera, position, '#FFFFFF');
 }
 
-export function DEBUG_logHit(fighter, gameState,  hitStrength, hitLocation) {
-    console.log(`${gameState.fighters[fighter.playerId].id} has hit ${gameState.fighters[fighter.opponent.playerId].id}'s ${hitLocation} with a ${hitStrength} attack`);
+export function DEBUG_logHit(fighter, gameState, attackType, hitStrength, hitLocation) {
+    console.log(`${gameState.fighters[fighter.playerId].id} has hit ${gameState.fighters[fighter.opponent.playerId].id}'s 
+    ${hitLocation} with a ${hitStrength} - ${attackType} attack
+    for ${FighterAttackBasaData[hitStrength].damage} damage points`);
 }

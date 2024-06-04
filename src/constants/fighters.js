@@ -42,6 +42,18 @@ export const FighterHurtBox = {
     FEET: 'feet',
 };
 
+export const FighterHurtBoxWeight = {
+    head: 2,
+    body: 8,
+    feet: 3
+};
+
+export const FighterCurrntPosition = {
+    FRONT: 'front',
+    TOP: 'top',
+    BOTTOM: 'bottom',
+};
+
 export const FighterHurtBy = {
     FIGHTER: 'fighter',
     FIREBALL: 'fireball',
@@ -95,6 +107,12 @@ export const FighterState = {
     LIGHT_KICK: 'light-kick',
     MEDIUM_KICK: 'medium-kick',
     HEAVY_KICK: 'heavy-kick',
+    CROUCH_LIGHT_PUNCH: 'crouch-light-punch',
+    CROUCH_MEDIUM_PUNCH: 'crouch-medium-punch',
+    CROUCH_HEAVY_PUNCH: 'crouch-heavy-punch',
+    CROUCH_LIGHT_KICK: 'crouch-light-kick',
+    CROUCH_MEDIUM_KICK: 'crouch-medium-kick',
+    CROUCH_HEAVY_KICK: 'crouch-heavy-kick',
     HURT_HEAD_LIGHT: 'hurt-head-light',
     HURT_HEAD_MEDIUM: 'hurt-head-medium',
     HURT_HEAD_HEAVY: 'hurt-head-heavy',
@@ -151,5 +169,5 @@ export const HurtStateValidForm = [
     FighterState.LIGHT_KICK, FighterState.MEDIUM_KICK, FighterState.HEAVY_KICK, 
     FighterState.HURT_HEAD_LIGHT, FighterState.HURT_HEAD_MEDIUM, FighterState.HURT_HEAD_HEAVY,
     FighterState.HURT_BODY_LIGHT, FighterState.HURT_BODY_MEDIUM, FighterState.HURT_BODY_HEAVY, 
-    FighterState.SPECIAL_1,
+    FighterState.SPECIAL_1, FighterState.CROUCH_LIGHT_PUNCH,
 ];
