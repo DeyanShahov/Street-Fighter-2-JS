@@ -130,6 +130,31 @@ export class Ryu extends Fighter {
             // Crouch Light Punch
             ['crouch-light-punch-1', [[[507, 398, 69, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
             ['crouch-light-punch-2', [[[590, 400, 95, 60], [31, 57]], PushBox.CROUCH, HurtBox.CROUCH, [13, -50, 51, 18]]],
+
+            // Crouch Medium Punch
+            ['crouch-medium-punch-1', [[[318, 586, 66, 62], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-medium-punch-2', [[[394, 585, 92, 63], [31, 60]], PushBox.CROUCH, HurtBox.CROUCH, [13, -50, 51, 18]]],
+            ['crouch-medium-punch-3', [[[247, 584, 64, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+
+            // Crouch Heavy Punch
+            ['crouch-heavy-punch-1', [[[11, 834, 60, 72], [28, 69]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-heavy-punch-2', [[[83, 815, 73, 92], [28, 88]], PushBox.IDLE, HurtBox.IDLE]],
+            ['crouch-heavy-punch-3', [[[167, 781, 57, 126], [28, 123]], PushBox.IDLE, HurtBox.IDLE, [11, -122, 18, 51]]],
+
+            // Crouch Light Kick
+            ['crouch-light-kick-1', [[[895, 953, 70, 64], [32, 62]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-light-kick-2', [[[977, 953, 112, 64], [32, 62]], PushBox.CROUCH, [[6, -61, 24, 18], [-16, -46, 44, 24], [-16, -24, 84, 24]], [13, -20, 60, 20]]],
+
+            // Crouch Medium Kick
+            ['crouch-medium-kick-1', [[[944, 1069, 70, 64], [32, 62]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-medium-kick-2', [[[1022, 1075, 97, 60], [14, 57]], PushBox.CROUCH, [[6, -61, 24, 18], [1, -46, 44, 24], [-16, -24, 44, 24]]]],
+            ['crouch-medium-kick-3', [[[1135, 1083, 145, 53], [32, 51]], PushBox.CROUCH, [[6, -61, 24, 18], [-16, -46, 44, 24], [-16, -24, 114, 24]], [20, -22, 85, 18]]],
+
+            // Crouch Heavy Kick
+            ['crouch-heavy-kick-1', [[[1424, 1222, 53, 60], [22, 57]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-heavy-kick-2', [[[1486, 1224, 122, 58], [45, 56]], PushBox.CROUCH, [[6, -61, 24, 18], [-16, -46, 44, 24], [-16, -22, 84, 22]], [10, -18, 60, 18]]],
+            ['crouch-heavy-kick-3', [[[1612, 1226, 62, 58], [30, 56]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-heavy-kick-4', [[[1682, 1224, 62, 60], [28, 58]], PushBox.CROUCH, HurtBox.CROUCH]],
         ]);
 
         this.animations = {
@@ -258,6 +283,29 @@ export class Ryu extends Fighter {
             [FighterState.CROUCH_LIGHT_PUNCH]: [
                 ['crouch-light-punch-1', 4], ['crouch-light-punch-2', 4],
                 ['crouch-light-punch-1', 6], ['crouch-light-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_MEDIUM_PUNCH]: [
+                ['crouch-medium-punch-1', 4], ['crouch-medium-punch-2', 4],
+                ['crouch-medium-punch-1', 4], ['crouch-medium-punch-3', 6], ['crouch-medium-punch-3', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_HEAVY_PUNCH]: [
+                ['crouch-heavy-punch-1', 4], ['crouch-heavy-punch-2', 6],
+                ['crouch-heavy-punch-3', 12], ['crouch-heavy-punch-2', 6], ['crouch-heavy-punch-1', 4],
+                ['crouch-heavy-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_LIGHT_KICK]: [
+                ['crouch-light-kick-1', 4], ['crouch-light-kick-2', 4],
+                ['crouch-light-kick-1', 6], ['crouch-light-kick-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_MEDIUM_KICK]: [
+                ['crouch-medium-kick-1', 2], ['crouch-medium-kick-2', 4],
+                ['crouch-medium-kick-3', 6], ['crouch-medium-kick-2', 4],
+                ['crouch-medium-kick-1', 2], ['crouch-medium-kick-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_HEAVY_KICK]: [
+                ['crouch-heavy-kick-1', 6], ['crouch-heavy-kick-2', 12],
+                ['crouch-heavy-kick-3', 6], ['crouch-heavy-kick-4', 4],
+                ['crouch-turn-3', 4], ['crouch-turn-3', FrameDelay.TRANSITION],
             ],
         };
 

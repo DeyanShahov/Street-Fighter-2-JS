@@ -141,7 +141,11 @@ export class Fighter {
             [FighterState.CROUCH]: {
                 init: () => { },
                 update: this.handleCrouchState.bind(this),
-                validFrom: [FighterState.CROUCH_DOWN, FighterState.CROUCH_TURN, FighterState.CROUCH_LIGHT_PUNCH],
+                validFrom: [
+                    FighterState.CROUCH_DOWN, FighterState.CROUCH_TURN,
+                    FighterState.CROUCH_LIGHT_PUNCH, FighterState.CROUCH_MEDIUM_PUNCH, FighterState.CROUCH_HEAVY_PUNCH,
+                    FighterState.CROUCH_LIGHT_KICK, FighterState.CROUCH_MEDIUM_KICK, FighterState.CROUCH_HEAVY_KICK,
+                ],
             },
             [FighterState.CROUCH_DOWN]: {
                 init: this.handleCrouchDownInit.bind(this),
@@ -248,6 +252,41 @@ export class Fighter {
                 attackStrength: FighterAttackStrength.LIGHT,
                 init: this.handleStandartAttackInit.bind(this),
                 update: this.handleCrouchLightPunchState.bind(this),
+                validFrom: [FighterState.CROUCH],
+            },
+            [FighterState.CROUCH_MEDIUM_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
+                attackStrength: FighterAttackStrength.MEDIUM,
+                init: this.handleStandartAttackInit.bind(this),
+                update: this.handleCrouchMediumPunchState.bind(this),
+                validFrom: [FighterState.CROUCH],
+            },
+            [FighterState.CROUCH_HEAVY_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
+                attackStrength: FighterAttackStrength.HEAVY,
+                init: this.handleStandartAttackInit.bind(this),
+                update: this.handleCrouchMediumPunchState.bind(this),
+                validFrom: [FighterState.CROUCH],
+            },
+            [FighterState.CROUCH_LIGHT_KICK]: {
+                attackType: FighterAttackType.KICK,
+                attackStrength: FighterAttackStrength.LIGHT,
+                init: this.handleStandartAttackInit.bind(this),
+                update: this.handleCrouchLightKickState.bind(this),
+                validFrom: [FighterState.CROUCH],
+            },
+            [FighterState.CROUCH_MEDIUM_KICK]: {
+                attackType: FighterAttackType.KICK,
+                attackStrength: FighterAttackStrength.MEDIUM,
+                init: this.handleStandartAttackInit.bind(this),
+                update: this.handleCrouchMediumKickState.bind(this),
+                validFrom: [FighterState.CROUCH],
+            },
+            [FighterState.CROUCH_HEAVY_KICK]: {
+                attackType: FighterAttackType.KICK,
+                attackStrength: FighterAttackStrength.HEAVY,
+                init: this.handleStandartAttackInit.bind(this),
+                update: this.handleCrouchMediumKickState.bind(this),
                 validFrom: [FighterState.CROUCH],
             },
         };
@@ -584,15 +623,15 @@ export class Fighter {
         if (control.isLightPunch(this.playerId)) {
             this.changeState(FighterState.CROUCH_LIGHT_PUNCH, time);
         } else if (control.isMediumPunch(this.playerId)) {
-            this.changeState(FighterState.MEDIUM_PUNCH, time);
+            this.changeState(FighterState.CROUCH_MEDIUM_PUNCH, time);
         } else if (control.isHeavyPunch(this.playerId)) {
-            this.changeState(FighterState.HEAVY_PUNCH, time);
+            this.changeState(FighterState.CROUCH_HEAVY_PUNCH, time);
         } else if (control.isLightKick(this.playerId)) {
-            this.changeState(FighterState.LIGHT_KICK, time);
+            this.changeState(FighterState.CROUCH_LIGHT_KICK, time);
         } else if (control.isMediumKick(this.playerId)) {
-            this.changeState(FighterState.MEDIUM_KICK, time);
+            this.changeState(FighterState.CROUCH_MEDIUM_KICK, time);
         } else if (control.isHeavyKick(this.playerId)) {
-            this.changeState(FighterState.HEAVY_KICK, time);
+            this.changeState(FighterState.CROUCH_HEAVY_KICK, time);
         }
 
         const newDirection = this.getDirections();
@@ -646,9 +685,15 @@ export class Fighter {
     }
 
     handleCrouchLightPunchState(time) {
-        // if (this.animationFrame < 2) return;
-        // if (control.isLightPunch(this.playerId)) this.handleLightAttackReset();
+        if (this.animationFrame < 2) return;
+        if (control.isLightPunch(this.playerId)) this.handleLightAttackReset();
 
+        if (!this.isAnimationCompleted()) return;
+        this.handleResteAttackState();
+        this.changeState(FighterState.CROUCH, time);
+    }
+
+    handleCrouchMediumPunchState(time) {
         if (!this.isAnimationCompleted()) return;
         this.handleResteAttackState();
         this.changeState(FighterState.CROUCH, time);
@@ -664,10 +709,25 @@ export class Fighter {
         this.changeState(FighterState.IDLE, time);
     }
 
+    handleCrouchLightKickState(time) {
+        if (this.animationFrame < 2) return;
+        if (control.isLightKick(this.playerId)) this.handleLightAttackReset();
+
+        if (!this.isAnimationCompleted()) return;
+        this.handleResteAttackState();
+        this.changeState(FighterState.CROUCH, time);
+    }
+
     handleMediumKickState(time) {
         if (!this.isAnimationCompleted()) return;
         this.handleResteAttackState();
         this.changeState(FighterState.IDLE, time);
+    }
+
+    handleCrouchMediumKickState(time) {
+        if (!this.isAnimationCompleted()) return;
+        this.handleResteAttackState();
+        this.changeState(FighterState.CROUCH, time);
     }
 
     handleHurtState(time) {
@@ -773,6 +833,9 @@ export class Fighter {
 
         if (!attackType || this.attackStruck) return;
 
+        // Check for frame without attack parameters. For skip unnecessary checks
+        if (this.boxes.hit.x === 0 || this.boxes.hit.y === 0 || this.boxes.hit.width === 0 || this.boxes.hit.height === 0) return;
+
         const actualHitBox = getActualBoxDimensions(this.position, this.direction, this.boxes.hit);
 
         let possibleHurtBoxs = [];
@@ -788,16 +851,16 @@ export class Fighter {
             
             // Check for success attack
             if (boxOverlap(actualHitBox, actualOpponentHurtBox)) {
-                // Add succes attack to list 
+                // Add succes attack to list
                 possibleHurtBoxs.push({hurtLoacation, actualOpponentHurtBox});
                 // Stop free hit sount, for future succes attack
                 stopSound(this.soundAttacks[attackStrength]);
             }
         });
 
-        
-
         if (possibleHurtBoxs.length == 0) return;
+
+        console.log('tuka');
 
         const onlyLocationName = possibleHurtBoxs.map((obj) => obj.hurtLoacation);
 
