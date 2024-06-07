@@ -1,6 +1,7 @@
 import { FighterAttackStrength, FighterAttackType, FighterHurtBox, FighterHurtBy } from '../../constants/fighters.js';
 import { FireballCollidedState, FireballState, fireballVelocity } from '../../constants/fireball.js';
-import { DEBUG_ENABLE, FRAME_TIME, SCREEN_WIDTH } from '../../constants/game.js';
+import { FRAME_TIME, SCREEN_WIDTH } from '../../constants/game.js';
+import { DEBUG_BOX_ENABLE } from '../../utils/gameUiSettings.js'
 import { boxOverlap, getActualBoxDimensions } from '../../utils/collisions.js';
 import * as DEBUG from '../../utils/fighterDebug.js'
 
@@ -143,7 +144,7 @@ export class Fireball {
 
         context.setTransform(1, 0, 0, 1, 0, 0);
 
-        if (!DEBUG_ENABLE) return;
+        if (!DEBUG_BOX_ENABLE) return;
 
         DEBUG.drawBox(context, camera, this.position, this.direction, collisionDimension, '#FF0000');
         DEBUG.drawCross(context, camera, this.position, '#FFF');

@@ -18,7 +18,8 @@ import {
 } from '../../constants/fighters.js';
 import { DANGER_DISTANCE as DANGER_DISTANCE_TO_OPPONENT, STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from '../../constants/stage.js';
 import { boxOverlap, getActualBoxDimensions, getDistanceToOpponet, rectsOverlap } from '../../utils/collisions.js';
-import { DEBUG_ENABLE, FRAME_TIME, SCREEN_WIDTH } from '../../constants/game.js';
+import { FRAME_TIME, SCREEN_WIDTH } from '../../constants/game.js';
+import { BLOCK_STYLE, DEBUG_BOX_ENABLE, DEBUG_LOG_ENABLE } from '../../utils/gameUiSettings.js'
 import { gameState } from '../../state/gameState.js';
 import { DEBUG_drawCollisionInfoBoxes, DEBUG_logHit } from '../../utils/fighterDebug.js';
 import { playSound, stopSound } from '../../engine/soundHandler.js';
@@ -33,8 +34,6 @@ export class Fighter {
         this.image = new Image();
 
         this.playerId = playerId;
-
-        this.blockStyle = BlockStyle.ON_ATTACK_BACKWARD;
 
         this.animations = {};
         this.animationFrame = 0;
@@ -85,7 +84,9 @@ export class Fighter {
                     FighterState.CROUCH_DOWN, FighterState.JUMP_LAND, FighterState.IDLE_TURN,
                     FighterState.LIGHT_PUNCH, FighterState.MEDIUM_PUNCH, FighterState.HEAVY_PUNCH,
                     FighterState.LIGHT_KICK, FighterState.MEDIUM_KICK, FighterState.HEAVY_KICK,
-                    FighterState.UPRIGHT_BLOCK,
+                    FighterState.CROUCH_UP, FighterState.UPRIGHT_BLOCK,
+                    FighterState.HURT_HEAD_LIGHT, FighterState.HURT_HEAD_MEDIUM, FighterState.HURT_HEAD_HEAVY,
+                    FighterState.HURT_BODY_LIGHT, FighterState.HURT_BODY_MEDIUM, FighterState.HURT_BODY_HEAVY,
                 ],
             },
             [FighterState.WALK_FORWARD]: {
@@ -136,6 +137,10 @@ export class Fighter {
                 update: this.handleJumpLandState.bind(this),
                 validFrom: [
                     FighterState.JUMP_UP, FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD,
+                    FighterState.JUMP_UP_ALL_PUNCH, FighterState.JUMP_MOVEMENT_HEAVY_PUNCH,
+                    FighterState.JUMP_MOVEMENT_LIGHT_PUNCH, FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH, 
+                    FighterState.JUMP_UP_LIGHT_KICK, FighterState.JUMP_UP_MEDIUM_KICK, FighterState.JUMP_UP_HEAVY_KICK,
+                    FighterState.JUMP_MOVEMENT_LIGHT_KICK, FighterState.JUMP_MOVEMENT_MEDIUM_KICK, FighterState.JUMP_MOVEMENT_HEAVY_KICK,
                 ],
             },
             [FighterState.CROUCH]: {
@@ -289,6 +294,76 @@ export class Fighter {
                 update: this.handleCrouchMediumKickState.bind(this),
                 validFrom: [FighterState.CROUCH],
             },
+            [FighterState.JUMP_UP_ALL_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
+                attackStrength: FighterAttackStrength.LIGHT,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_UP],
+            },
+            [FighterState.JUMP_UP_LIGHT_KICK]: {
+                attackType: FighterAttackType.KICK,
+                attackStrength: FighterAttackStrength.LIGHT,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_UP],
+            },
+            [FighterState.JUMP_UP_MEDIUM_KICK]: {
+                attackType: FighterAttackType.KICK,
+                attackStrength: FighterAttackStrength.MEDIUM,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_UP],
+            },
+            [FighterState.JUMP_UP_HEAVY_KICK]: {
+                attackType: FighterAttackType.KICK,
+                attackStrength: FighterAttackStrength.HEAVY,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_UP],
+            },
+            [FighterState.JUMP_MOVEMENT_LIGHT_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
+                attackStrength: FighterAttackStrength.LIGHT,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_BACKWARD, FighterState.JUMP_FORWARD],
+            },
+            [FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
+                attackStrength: FighterAttackStrength.MEDIUM,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_BACKWARD, FighterState.JUMP_FORWARD],
+            },
+            [FighterState.JUMP_MOVEMENT_HEAVY_PUNCH]: {
+                attackType: FighterAttackType.PUNCH,
+                attackStrength: FighterAttackStrength.HEAVY,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_BACKWARD, FighterState.JUMP_FORWARD],
+            },
+            [FighterState.JUMP_MOVEMENT_LIGHT_KICK]: {
+                attackType: FighterAttackType.KICK,
+                attackStrength: FighterAttackStrength.LIGHT,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_BACKWARD, FighterState.JUMP_FORWARD],
+            },
+            [FighterState.JUMP_MOVEMENT_MEDIUM_KICK]: {
+                attackType: FighterAttackType.KICK,
+                attackStrength: FighterAttackStrength.MEDIUM,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_BACKWARD, FighterState.JUMP_FORWARD],
+            },
+            [FighterState.JUMP_MOVEMENT_HEAVY_KICK]: {
+                attackType: FighterAttackType.KICK,
+                attackStrength: FighterAttackStrength.HEAVY,
+                init: this.handleJumpUpAllAttackInit.bind(this),
+                update: this.handleJumpUpAllAttackState.bind(this),
+                validFrom: [FighterState.JUMP_BACKWARD, FighterState.JUMP_FORWARD],
+            },
         };
     }
 
@@ -371,9 +446,10 @@ export class Fighter {
 
 
     changeState(newState, time, args) {
-        // if (!this.states[newState].validFrom.includes(this.currentState)) {
-        //     console.warn(`Illegal transition from "${this.currentState}" to "${newState}"`);
-        // }
+        if (!this.states[newState].validFrom.includes(this.currentState)) {
+            console.warn(`Illegal transition from "${this.currentState}" to "${newState}"`);
+        }
+        if (!this.states[newState].validFrom.includes(this.currentState)) return;
 
         this.currentState = newState;
         this.animationFrame = 0;
@@ -399,7 +475,7 @@ export class Fighter {
     }
 
     handleUprightBlockState(time) {
-        if (this.blockStyle === BlockStyle.ON_ATTACK_BACKWARD) {
+        if (BLOCK_STYLE === undefined || BLOCK_STYLE === BlockStyle.ON_ATTACK_BACKWARD) {
             if (!control.isBackward(this.playerId, this.direction)) this.changeState(FighterState.IDLE, time);
         } else {
             if (!control.isControlDown(this.playerId, Control.LIGHT_PUNCH)
@@ -430,6 +506,11 @@ export class Fighter {
 
     handleStandartAttackInit() {
         this.resetVelocities();
+        playSound(this.soundAttacks[this.states[this.currentState].attackStrength]);
+        this.isInAttack = true;
+    }
+
+    handleJumpUpAllAttackInit() {
         playSound(this.soundAttacks[this.states[this.currentState].attackStrength]);
         this.isInAttack = true;
     }
@@ -482,6 +563,32 @@ export class Fighter {
         if (this.position.y > STAGE_FLOOR) {
             this.position.y = STAGE_FLOOR;
             this.changeState(FighterState.JUMP_LAND, time);
+        }
+
+        if (control.isLightPunch(this.playerId)) {
+            this.currentState === FighterState.JUMP_UP
+            ? this.changeState(FighterState.JUMP_UP_ALL_PUNCH, time)
+            : this.changeState(FighterState.JUMP_MOVEMENT_LIGHT_PUNCH);
+        } else if (control.isMediumPunch(this.playerId)) {
+            this.currentState === FighterState.JUMP_UP
+            ? this.changeState(FighterState.JUMP_UP_ALL_PUNCH, time)
+            : this.changeState(FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH);
+        } else if ( control.isHeavyPunch(this.playerId)) {
+            this.currentState === FighterState.JUMP_UP
+            ? this.changeState(FighterState.JUMP_UP_ALL_PUNCH, time)
+            : this.changeState(FighterState.JUMP_MOVEMENT_HEAVY_PUNCH);
+        } else if (control.isLightKick(this.playerId)) {
+            this.currentState === FighterState.JUMP_UP
+            ? this.changeState(FighterState.JUMP_UP_LIGHT_KICK, time)
+            : this.changeState(FighterState.JUMP_MOVEMENT_LIGHT_KICK);
+        } else if (control.isMediumKick(this.playerId)) {
+            this.currentState === FighterState.JUMP_UP
+            ? this.changeState(FighterState.JUMP_UP_MEDIUM_KICK, time)
+            : this.changeState(FighterState.JUMP_MOVEMENT_MEDIUM_KICK);
+        } else if (control.isHeavyKick(this.playerId)) {
+            this.currentState === FighterState.JUMP_UP
+            ? this.changeState(FighterState.JUMP_UP_HEAVY_KICK, time)
+            : this.changeState(FighterState.JUMP_MOVEMENT_HEAVY_KICK);
         }
     }
 
@@ -575,11 +682,7 @@ export class Fighter {
         this.direction = this.getDirections();
     }
 
-
-    checkForBlockMechanics() {
-        return this.blockStyle === BlockStyle.ON_BACKWARD_ANY_PUNCH;
-    }
-
+    checkForBlockMechanics = () => BLOCK_STYLE === BlockStyle.ON_BACKWARD_ANY_PUNCH;
 
     handleWalkBackwardState(time) {
         if (!this.checkForBlockMechanics()
@@ -697,6 +800,21 @@ export class Fighter {
         if (!this.isAnimationCompleted()) return;
         this.handleResteAttackState();
         this.changeState(FighterState.CROUCH, time);
+    }
+
+    handleJumpUpAllAttackState(time) {
+        if (this.isAnimationCompleted()) {
+            this.changeState(FighterState.JUMP_LAND, time);
+            this.handleResteAttackState();
+        } else {
+            this.velocity.y += this.gravity * time.secondsPassed;
+
+            if (this.position.y > STAGE_FLOOR) {
+                this.position.y = STAGE_FLOOR;
+                this.changeState(FighterState.JUMP_LAND, time);
+                this.handleResteAttackState();
+            }
+        }       
     }
 
 
@@ -826,7 +944,7 @@ export class Fighter {
 
         return distanceToOpponentHitBox <= DANGER_DISTANCE_TO_OPPONENT;
     }
-  
+
 
     updateHitBoxCollided(time) {
         const { attackStrength, attackType } = this.states[this.currentState];
@@ -848,19 +966,17 @@ export class Fighter {
                 this.opponent.direction,
                 { x, y, width, height },
             );
-            
+
             // Check for success attack
             if (boxOverlap(actualHitBox, actualOpponentHurtBox)) {
                 // Add succes attack to list
-                possibleHurtBoxs.push({hurtLoacation, actualOpponentHurtBox});
+                possibleHurtBoxs.push({ hurtLoacation, actualOpponentHurtBox });
                 // Stop free hit sount, for future succes attack
                 stopSound(this.soundAttacks[attackStrength]);
             }
         });
 
         if (possibleHurtBoxs.length == 0) return;
-
-        console.log('tuka');
 
         const onlyLocationName = possibleHurtBoxs.map((obj) => obj.hurtLoacation);
 
@@ -875,10 +991,14 @@ export class Fighter {
         hitPosition.x -= 4 - Math.random() * 8;
         hitPosition.y -= 4 - Math.random() * 8;
 
-        console.log(`${gameState.fighters[this.playerId].id} position is ${this.currentPosition}.
-        ${gameState.fighters[this.opponent.playerId].id} position is ${this.opponent.currentPosition}`);
-        if (DEBUG_ENABLE) DEBUG_logHit(this, gameState, attackType, attackStrength, targetBox.hurtLoacation);
-        this.opponent.handleAttackHit(time, attackStrength, attackType, hitPosition, targetBox.hurtLoacation, FighterHurtBy.FIGHTER);    
+        if (DEBUG_LOG_ENABLE) {
+            console.log(`${gameState.fighters[this.playerId].id} position is ${this.currentPosition}.
+                ${gameState.fighters[this.opponent.playerId].id} position is ${this.opponent.currentPosition}`);
+
+            DEBUG_logHit(this, gameState, attackType, attackStrength, targetBox.hurtLoacation);
+        }
+
+        this.opponent.handleAttackHit(time, attackStrength, attackType, hitPosition, targetBox.hurtLoacation, FighterHurtBy.FIGHTER);
     }
 
     updateHurtShake(time, delay) {
@@ -944,7 +1064,7 @@ export class Fighter {
 
         context.setTransform(1, 0, 0, 1, 0, 0);
 
-        if (!DEBUG_ENABLE) return;
+        if (!DEBUG_BOX_ENABLE) return;
 
         DEBUG_drawCollisionInfoBoxes(this, context, camera);
     }

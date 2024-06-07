@@ -1,10 +1,11 @@
 import { pollGamepads, registerGamepadEvents, registerKeyboardEvents } from './engine/InputHandler.js';
 import { getContext } from './utils/context.js';
 import { BattleScene } from './scenes/BattleScene.js';
-import { DEBUG_ENABLE } from './constants/game.js';
+import { handleBlockStyleClick, handleDebugBoxClick, handleDebugLogClick } from './utils/gameUiSettings.js';
 
-export class StreetFighterGame{
+export class StreetFighterGame {
     context = getContext();
+    debug = true;
 
     frameTime = {
         previous: 0,
@@ -20,13 +21,13 @@ export class StreetFighterGame{
         window.requestAnimationFrame(this.frame.bind(this));
 
         this.frameTime = {
-            secondsPassed: ( time - this.frameTime.previous) / 1000,
+            secondsPassed: (time - this.frameTime.previous) / 1000,
             previous: time,
         };
 
         pollGamepads();
         this.scene.update(this.frameTime, this.context);
-        this.scene.draw(this.context);     
+        this.scene.draw(this.context);
     }
 
     // handleFormSubmit(event) {
@@ -45,8 +46,35 @@ export class StreetFighterGame{
     //     });
     // }
 
+    handleDebugBox() {
+        const debugCheckbox = document.getElementById('debugBox');
+        if (debugCheckbox) {
+            window.addEventListener('click', () => handleDebugBoxClick(debugCheckbox));
+        }
+    }
+
+    handleDebugLog() {
+        const debugCheckbox = document.getElementById('debugLog');
+        if (debugCheckbox) {
+            window.addEventListener('click', () => handleDebugLogClick(debugCheckbox));
+        }
+    }
+    
+    handleBlockStyle() {
+        const blockTypeBox = document.getElementById('block');
+        if (blockTypeBox) {
+            window.addEventListener('click', () => handleBlockStyleClick(blockTypeBox));
+        }
+    }
+
+
+
     start() {
         //document.addEventListener('submit', this.handleFormSubmit.bind(this));
+
+        this.handleDebugBox();
+        this.handleDebugLog();
+        this.handleBlockStyle();
 
         registerKeyboardEvents();
         registerGamepadEvents();
@@ -54,3 +82,4 @@ export class StreetFighterGame{
         window.requestAnimationFrame(this.frame.bind(this));
     }
 };
+

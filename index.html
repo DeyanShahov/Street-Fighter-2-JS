@@ -68,15 +68,17 @@
 <body>
     <form>
         <div>
-            <input id="ken" type="checkbox" name="Fighter" value="Ken"/>
-            <label for="ken">Ken</label>
+            <input id="debugBox" type="checkbox" checked/>
+            <label for="debugBox">DebugBox</label>
         </div>
         <div>
-            <input id="ryu" type="checkbox" name="Fighter" value="Ryu"/>
-            <label for="ryu">Ryu</label>
+            <input id="debugLog" type="checkbox" checked/>
+            <label for="debugLog">DebugLog</label>
         </div>
-        <select id="state-dropdown" name="state"></select>
-        <button type="submit">Transition</button>
+        <div>
+            <input id="block" type="checkbox" checked/>
+            <label for="block">BlockType</label>
+        </div>
     </form>
 
     <main>
@@ -104,7 +106,6 @@
     <audio id="sound-fighter-medium-punch-hit" src="./sounds/medium-punch-hit.ogg" preload="auto"></audio>
 
     <audio id="sound-ryu-voice-hadouken" src="./sounds/voice-hadouken.ogg" preload="auto"></audio>
-    <audio id="sound-ken-voice-hadouken" src="./sounds/voice-hadouken.ogg" preload="auto"></audio>
- 
+    <audio id="sound-ken-voice-hadouken" src="./sounds/voice-hadouken.ogg" preload="auto"></audio> 
 </body>
 </html>

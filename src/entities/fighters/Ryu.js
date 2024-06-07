@@ -155,6 +155,39 @@ export class Ryu extends Fighter {
             ['crouch-heavy-kick-2', [[[1486, 1224, 122, 58], [45, 56]], PushBox.CROUCH, [[6, -61, 24, 18], [-16, -46, 44, 24], [-16, -22, 84, 22]], [10, -18, 60, 18]]],
             ['crouch-heavy-kick-3', [[[1612, 1226, 62, 58], [30, 56]], PushBox.CROUCH, HurtBox.CROUCH]],
             ['crouch-heavy-kick-4', [[[1682, 1224, 62, 60], [28, 58]], PushBox.CROUCH, HurtBox.CROUCH]],
+
+            // Jump Up - Light, Medium and Heavy Punch
+            ['jump-up-all-punch-1', [[[5, 571, 69, 78], [33, 75]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['jump-up-all-punch-2', [[[148, 575, 89, 65], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH, [13, -40, 40, 20]]],
+            ['jump-up-all-punch-3', [[[87, 576, 52, 69], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH]],
+
+            // Jump Up - Light and Medium Kick
+            //['jump-up-l-m-kick-1', [[[532, 1042, 55, 103], [27, 100]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-up-l-m-kick-1', [[[595, 1045, 77, 92], [32, 89]], PushBox.JUMP, HurtBox.JUMP, [5, -90, 35, 30]]],
+            ['jump-up-l-m-kick-2', [[[1535, 2181, 54, 77], [28, 75]], PushBox.JUMP, HurtBox.JUMP]],
+
+            // Jump Up - Heavy Kick
+            ['jump-up-heavy-kick-1', [[[864, 1181, 53, 94], [23, 91]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-up-heavy-kick-2', [[[929, 1181, 94, 103], [25, 99]], PushBox.JUMP, HurtBox.JUMP, [3, -60, 60, 20]]],
+            ['jump-up-heavy-kick-3', [[[1032, 1191, 58, 95], [21, 91]], PushBox.JUMP, HurtBox.JUMP]],
+
+            // Jump Forward / Backward - Light
+            ['jump-movement-light-punch-1', [[[353, 362, 52, 69], [28, 66]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['jump-movement-light-punch-2', [[[415, 365, 81, 71], [30, 69]], PushBox.CROUCH, HurtBox.CROUCH, [10, -40, 40, 15]]],
+
+            // Jump Forward / Backward - Medium
+            ['jump-movement-medium-punch-1', [[[666, 931, 59, 77], [32, 74]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-movement-medium-punch-2', [[[734, 930, 56, 74], [30, 71]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-movement-medium-punch-3', [[[801, 934, 77, 67], [38, 63]], PushBox.CROUCH, HurtBox.CROUCH, [10, -30, 30, 20]]],
+
+            // Jump Forward / Backward - Heavy
+            ['jump-movement-heavy-punch-1', [[[5, 571, 69, 78], [33, 75]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['jump-movement-heavy-punch-2', [[[148, 575, 89, 65], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH, [13, -40, 40, 20]]],
+            ['jump-movement-heavy-punch-3', [[[87, 576, 52, 69], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH]],
+
+            // Jump Forward / Backward- Light, Medium and Heavy Kick
+            ['jump-movement-all-kick-1', [[[752, 1052, 63, 73], [33, 70]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-movement-all-kick-2', [[[823, 1056, 109, 62], [32, 58]], PushBox.CROUCH, HurtBox.CROUCH, [13, -20, 60, 20]]],
         ]);
 
         this.animations = {
@@ -307,6 +340,47 @@ export class Ryu extends Fighter {
                 ['crouch-heavy-kick-3', 6], ['crouch-heavy-kick-4', 4],
                 ['crouch-turn-3', 4], ['crouch-turn-3', FrameDelay.TRANSITION],
             ],
+            [FighterState.JUMP_UP_ALL_PUNCH]: [
+                ['jump-up-all-punch-1', 4], ['jump-up-all-punch-2', 8], ['jump-up-all-punch-1', 6],
+                ['jump-up-all-punch-3', 6], ['jump-up-all-punch-3', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_UP_LIGHT_KICK]: [
+                ['jump-up-l-m-kick-1', 10], ['jump-up-l-m-kick-1', 6],
+                ['jump-up-l-m-kick-2', 6], ['jump-up-l-m-kick-2', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_UP_MEDIUM_KICK]: [
+                ['jump-up-l-m-kick-1', 6], ['jump-up-l-m-kick-1', 20],
+                ['jump-up-l-m-kick-2', 12], ['jump-up-l-m-kick-2', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_UP_HEAVY_KICK]: [
+                ['jump-up-heavy-kick-1', 8], ['jump-up-heavy-kick-1', 8],
+                ['jump-up-heavy-kick-2', 12], ['jump-up-heavy-kick-3', 16],
+                ['jump-up-heavy-kick-3', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_LIGHT_PUNCH]: [
+                ['jump-movement-light-punch-1', 2], ['jump-movement-light-punch-2', 4],
+                ['jump-movement-light-punch-1', 4], ['jump-movement-light-punch-1', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH]: [
+                ['jump-movement-medium-punch-1', 2], ['jump-movement-medium-punch-2', 4], ['jump-movement-medium-punch-3', 12],
+                ['jump-movement-medium-punch-2', 4], ['jump-movement-medium-punch-2', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_HEAVY_PUNCH]: [
+                ['jump-movement-heavy-punch-1', 4], ['jump-movement-heavy-punch-2', 8], ['jump-movement-heavy-punch-1', 6],
+                ['jump-movement-heavy-punch-3', 6], ['jump-movement-heavy-punch-3', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_LIGHT_KICK]: [
+                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 12],
+                ['jump-movement-all-kick-1', 8], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_MEDIUM_KICK]: [
+                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 12],
+                ['jump-movement-all-kick-1', 8], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_HEAVY_KICK]: [
+                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 12],
+                ['jump-movement-all-kick-1', 8], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
+            ],
         };
 
         this.initialVelocity = {
@@ -340,7 +414,7 @@ export class Ryu extends Fighter {
                 FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP, FighterState.CROUCH_TURN,
             ],
         };
-        
+
         this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_1);
     }
 

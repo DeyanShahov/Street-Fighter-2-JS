@@ -1,5 +1,5 @@
 import { StreetFighterGame } from './StreetFighterGame.js';
-//import { FighterState } from './constants/fighters.js';
+import { FighterState } from './constants/fighters.js';
 
 // function populateMoveDropdown() {
 //     const dropdown = document.getElementById('state-dropdown');
