@@ -129,8 +129,67 @@ export class Ken extends Fighter {
             ['upright-block-2', [[[804, 4017, 64, 93], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
 
             // Crouch Light Punch
-            ['crouch-light-punch-1', [[[507, 398, 69, 97], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
-            ['crouch-light-punch-2', [[[749, 1416, 92, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE, [11, -85, 50, 18]]],
+            ['crouch-light-punch-1', [[[868, 1947, 69, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-light-punch-2', [[[755, 1947, 95, 60], [31, 57]], PushBox.CROUCH, HurtBox.CROUCH, [13, -50, 51, 18]]],
+
+            // Crouch Medium Punch
+            ['crouch-medium-punch-1', [[[787, 2012, 66, 62], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-medium-punch-2', [[[675, 2011, 92, 63], [31, 60]], PushBox.CROUCH, HurtBox.CROUCH, [13, -50, 51, 18]]],
+            ['crouch-medium-punch-3', [[[868, 2012, 64, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+
+            // Crouch Heavy Punch
+            ['crouch-heavy-punch-1', [[[867, 2130, 60, 72], [28, 69]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-heavy-punch-2', [[[778, 2112, 73, 92], [28, 88]], PushBox.IDLE, HurtBox.IDLE]],
+            ['crouch-heavy-punch-3', [[[704, 2076, 57, 126], [28, 123]], PushBox.IDLE, HurtBox.IDLE, [11, -122, 18, 51]]],
+
+            // Crouch Light Kick
+            ['crouch-light-kick-1', [[[867, 2915, 70, 64], [32, 62]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-light-kick-2', [[[744, 2915, 112, 64], [32, 62]], PushBox.CROUCH, [[6, -61, 24, 18], [-16, -46, 44, 24], [-16, -24, 84, 24]], [13, -20, 60, 20]]],
+
+            // Crouch Medium Kick
+            ['crouch-medium-kick-1', [[[867, 2915, 70, 64], [32, 62]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-medium-kick-2', [[[832, 2984, 97, 60], [14, 57]], PushBox.CROUCH, [[6, -61, 24, 18], [1, -46, 44, 24], [-16, -24, 44, 24]]]],
+            ['crouch-medium-kick-3', [[[670, 2991, 145, 53], [32, 51]], PushBox.CROUCH, [[6, -61, 24, 18], [-16, -46, 44, 24], [-16, -24, 114, 24]], [20, -22, 85, 18]]],
+
+            // Crouch Heavy Kick
+            ['crouch-heavy-kick-1', [[[879, 3048, 53, 60], [22, 57]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-heavy-kick-2', [[[738, 3050, 122, 58], [45, 56]], PushBox.CROUCH, [[6, -61, 24, 18], [-16, -46, 44, 24], [-16, -22, 84, 22]], [10, -18, 60, 18]]],
+            ['crouch-heavy-kick-3', [[[656, 3049, 62, 58], [30, 56]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-heavy-kick-4', [[[582, 3049, 62, 60], [28, 58]], PushBox.CROUCH, HurtBox.CROUCH]],
+
+            // Jump Up - Light, Medium and Heavy Punch
+            ['jump-up-all-punch-1', [[[867, 2295, 69, 78], [33, 75]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['jump-up-all-punch-2', [[[760, 2291, 89, 58], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH, [13, -40, 40, 20]]],
+            ['jump-up-all-punch-3', [[[748, 1214, 54, 77], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH]],
+
+            // Jump Up - Light and Medium Kick
+            //['jump-up-l-m-kick-1', [[[532, 1042, 55, 103], [27, 100]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-up-l-m-kick-1', [[[861, 3110, 76, 92], [32, 89]], PushBox.JUMP, HurtBox.JUMP, [5, -90, 35, 30]]],
+            ['jump-up-l-m-kick-2', [[[748, 1214, 54, 77], [28, 75]], PushBox.JUMP, HurtBox.JUMP]],
+
+            // Jump Up - Heavy Kick
+            ['jump-up-heavy-kick-1', [[[878, 3208, 53, 94], [23, 91]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-up-heavy-kick-2', [[[778, 3211, 94, 103], [25, 99]], PushBox.JUMP, HurtBox.JUMP, [3, -60, 60, 20]]],
+            ['jump-up-heavy-kick-3', [[[717, 3215, 58, 95], [21, 91]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-up-heavy-kick-4', [[[639, 3215, 58, 88], [21, 91]], PushBox.JUMP, HurtBox.JUMP]],
+
+            // Jump Forward / Backward - Light
+            ['jump-movement-light-punch-1', [[[885, 2204, 52, 69], [28, 66]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['jump-movement-light-punch-2', [[[782, 2204, 81, 71], [30, 69]], PushBox.CROUCH, HurtBox.CROUCH, [10, -40, 40, 15]]],
+
+            // Jump Forward / Backward - Medium
+            ['jump-movement-medium-punch-1', [[[863, 3324, 61, 76], [32, 74]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-movement-medium-punch-2', [[[788, 3324, 55, 73], [30, 71]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-movement-medium-punch-3', [[[695, 3322, 77, 67], [38, 63]], PushBox.CROUCH, HurtBox.CROUCH, [10, -30, 30, 20]]],
+
+            // Jump Forward / Backward - Heavy
+            ['jump-movement-heavy-punch-1', [[[867, 2295, 69, 77], [33, 75]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['jump-movement-heavy-punch-2', [[[885, 2204, 52, 69], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['jump-movement-heavy-punch-3', [[[760, 2291, 88, 58], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH, [13, -40, 40, 20]]],
+
+            // Jump Forward / Backward- Light, Medium and Heavy Kick
+            ['jump-movement-all-kick-1', [[[873, 3409, 63, 72], [33, 70]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-movement-all-kick-2', [[[753, 3413, 110, 58], [32, 58]], PushBox.CROUCH, HurtBox.CROUCH, [13, -20, 60, 20]]],
         ]);
 
         this.animations = {
@@ -255,6 +314,74 @@ export class Ken extends Fighter {
                 ['upright-block-1', 3], ['upright-block-2', 3],
                 ['upright-block-2', FrameDelay.FREEZE],
             ],
+            [FighterState.CROUCH_LIGHT_PUNCH]: [
+                ['crouch-light-punch-1', 4], ['crouch-light-punch-2', 4],
+                ['crouch-light-punch-1', 6], ['crouch-light-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_MEDIUM_PUNCH]: [
+                ['crouch-medium-punch-1', 4], ['crouch-medium-punch-2', 4],
+                ['crouch-medium-punch-1', 4], ['crouch-medium-punch-3', 6], ['crouch-medium-punch-3', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_HEAVY_PUNCH]: [
+                ['crouch-heavy-punch-1', 4], ['crouch-heavy-punch-2', 6],
+                ['crouch-heavy-punch-3', 12], ['crouch-heavy-punch-2', 6], ['crouch-heavy-punch-1', 4],
+                ['crouch-heavy-punch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_LIGHT_KICK]: [
+                ['crouch-light-kick-1', 4], ['crouch-light-kick-2', 4],
+                ['crouch-light-kick-1', 6], ['crouch-light-kick-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_MEDIUM_KICK]: [
+                ['crouch-medium-kick-1', 2], ['crouch-medium-kick-2', 4],
+                ['crouch-medium-kick-3', 6], ['crouch-medium-kick-2', 4],
+                ['crouch-medium-kick-1', 2], ['crouch-medium-kick-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.CROUCH_HEAVY_KICK]: [
+                ['crouch-heavy-kick-1', 6], ['crouch-heavy-kick-2', 12],
+                ['crouch-heavy-kick-3', 6], ['crouch-heavy-kick-4', 4],
+                ['crouch-turn-3', 4], ['crouch-turn-3', FrameDelay.TRANSITION],
+            ],
+            [FighterState.JUMP_UP_ALL_PUNCH]: [
+                ['jump-up-all-punch-1', 4], ['jump-up-all-punch-2', 8], ['jump-up-all-punch-1', 6],
+                ['jump-up-all-punch-3', 6], ['jump-up-all-punch-3', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_UP_LIGHT_KICK]: [
+                ['jump-up-l-m-kick-1', 10], ['jump-up-l-m-kick-1', 6],
+                ['jump-up-l-m-kick-2', 6], ['jump-up-l-m-kick-2', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_UP_MEDIUM_KICK]: [
+                ['jump-up-l-m-kick-1', 6], ['jump-up-l-m-kick-1', 20],
+                ['jump-up-l-m-kick-2', 12], ['jump-up-l-m-kick-2', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_UP_HEAVY_KICK]: [
+                ['jump-up-heavy-kick-1', 8], ['jump-up-heavy-kick-2', 12],
+                ['jump-up-heavy-kick-3', 12], ['jump-up-heavy-kick-4', 8],
+                ['jump-up-heavy-kick-4', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_LIGHT_PUNCH]: [
+                ['jump-movement-light-punch-1', 2], ['jump-movement-light-punch-2', 8],
+                ['jump-movement-light-punch-1', 4], ['jump-movement-light-punch-1', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH]: [
+                ['jump-movement-medium-punch-1', 2], ['jump-movement-medium-punch-2', 4], ['jump-movement-medium-punch-3', 12],
+                ['jump-movement-medium-punch-2', 4], ['jump-movement-medium-punch-2', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_HEAVY_PUNCH]: [
+                ['jump-movement-heavy-punch-1', 4], ['jump-movement-heavy-punch-2', 6], ['jump-movement-heavy-punch-3', 8],
+                ['jump-movement-heavy-punch-2', 8], ['jump-movement-heavy-punch-2', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_LIGHT_KICK]: [
+                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 12],
+                ['jump-movement-all-kick-1', 6], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_MEDIUM_KICK]: [
+                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 16],
+                ['jump-movement-all-kick-1', 10], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
+            ],
+            [FighterState.JUMP_MOVEMENT_HEAVY_KICK]: [
+                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 20],
+                ['jump-movement-all-kick-1', 14], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
+            ],
         };
 
         this.initialVelocity = {
@@ -290,7 +417,7 @@ export class Ken extends Fighter {
             ],
         };
 
-        this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_1);    
+        this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_1);
     }
 
     handleHadoukenInit(_, strength) {
@@ -300,7 +427,7 @@ export class Ken extends Fighter {
     }
 
     handleHadoukenState(time) {
-        if ( !this.fireball.fired && this.animationFrame === 3) {
+        if (!this.fireball.fired && this.animationFrame === 3) {
             this.fireball.fired = true;
             this.entityList.add(Fireball, time, this, this.fireball.strength);
         }

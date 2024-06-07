@@ -170,6 +170,7 @@ export class Ryu extends Fighter {
             ['jump-up-heavy-kick-1', [[[864, 1181, 53, 94], [23, 91]], PushBox.JUMP, HurtBox.JUMP]],
             ['jump-up-heavy-kick-2', [[[929, 1181, 94, 103], [25, 99]], PushBox.JUMP, HurtBox.JUMP, [3, -60, 60, 20]]],
             ['jump-up-heavy-kick-3', [[[1032, 1191, 58, 95], [21, 91]], PushBox.JUMP, HurtBox.JUMP]],
+            ['jump-up-heavy-kick-4', [[[1101, 1191, 58, 89], [21, 91]], PushBox.JUMP, HurtBox.JUMP]],
 
             // Jump Forward / Backward - Light
             ['jump-movement-light-punch-1', [[[353, 362, 52, 69], [28, 66]], PushBox.CROUCH, HurtBox.CROUCH]],
@@ -182,8 +183,8 @@ export class Ryu extends Fighter {
 
             // Jump Forward / Backward - Heavy
             ['jump-movement-heavy-punch-1', [[[5, 571, 69, 78], [33, 75]], PushBox.CROUCH, HurtBox.CROUCH]],
-            ['jump-movement-heavy-punch-2', [[[148, 575, 89, 65], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH, [13, -40, 40, 20]]],
-            ['jump-movement-heavy-punch-3', [[[87, 576, 52, 69], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['jump-movement-heavy-punch-2', [[[87, 576, 52, 69], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['jump-movement-heavy-punch-3', [[[148, 575, 89, 65], [33, 63]], PushBox.CROUCH, HurtBox.CROUCH, [13, -40, 40, 20]]],
 
             // Jump Forward / Backward- Light, Medium and Heavy Kick
             ['jump-movement-all-kick-1', [[[752, 1052, 63, 73], [33, 70]], PushBox.JUMP, HurtBox.JUMP]],
@@ -353,12 +354,12 @@ export class Ryu extends Fighter {
                 ['jump-up-l-m-kick-2', 12], ['jump-up-l-m-kick-2', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_UP_HEAVY_KICK]: [
-                ['jump-up-heavy-kick-1', 8], ['jump-up-heavy-kick-1', 8],
-                ['jump-up-heavy-kick-2', 12], ['jump-up-heavy-kick-3', 16],
-                ['jump-up-heavy-kick-3', FrameDelay.FREEZE],
+                ['jump-up-heavy-kick-1', 8], ['jump-up-heavy-kick-2', 12],
+                ['jump-up-heavy-kick-3', 12], ['jump-up-heavy-kick-4', 8],
+                ['jump-up-heavy-kick-4', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_MOVEMENT_LIGHT_PUNCH]: [
-                ['jump-movement-light-punch-1', 2], ['jump-movement-light-punch-2', 4],
+                ['jump-movement-light-punch-1', 2], ['jump-movement-light-punch-2', 8],
                 ['jump-movement-light-punch-1', 4], ['jump-movement-light-punch-1', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH]: [
@@ -366,20 +367,20 @@ export class Ryu extends Fighter {
                 ['jump-movement-medium-punch-2', 4], ['jump-movement-medium-punch-2', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_MOVEMENT_HEAVY_PUNCH]: [
-                ['jump-movement-heavy-punch-1', 4], ['jump-movement-heavy-punch-2', 8], ['jump-movement-heavy-punch-1', 6],
-                ['jump-movement-heavy-punch-3', 6], ['jump-movement-heavy-punch-3', FrameDelay.FREEZE],
+                ['jump-movement-heavy-punch-1', 4], ['jump-movement-heavy-punch-2', 6], ['jump-movement-heavy-punch-3', 8],
+                ['jump-movement-heavy-punch-2', 8], ['jump-movement-heavy-punch-2', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_MOVEMENT_LIGHT_KICK]: [
                 ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 12],
-                ['jump-movement-all-kick-1', 8], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
+                ['jump-movement-all-kick-1', 6], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_MOVEMENT_MEDIUM_KICK]: [
-                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 12],
-                ['jump-movement-all-kick-1', 8], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
+                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 16],
+                ['jump-movement-all-kick-1', 10], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
             ],
             [FighterState.JUMP_MOVEMENT_HEAVY_KICK]: [
-                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 12],
-                ['jump-movement-all-kick-1', 8], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
+                ['jump-movement-all-kick-1', 4], ['jump-movement-all-kick-2', 20],
+                ['jump-movement-all-kick-1', 14], ['jump-movement-all-kick-1', FrameDelay.FREEZE],
             ],
         };
 
