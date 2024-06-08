@@ -62,7 +62,7 @@ export class Ryu extends Fighter {
             // Crouch
             ['crouch-1', [[[551, 21, 53, 83], [27, 81]], PushBox.IDLE, HurtBox.IDLE]],
             ['crouch-2', [[[611, 36, 57, 69], [25, 66]], PushBox.BEND, HurtBox.BEND]],
-            ['crouch-3', [[[679, 44, 61, 61], [25, 58]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-3', [[[679, 44, 61, 61], [25, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
 
             // Idle Turn
             ['idle-turn-1', [[[348, 8, 54, 95], [29, 92]], PushBox.IDLE, [[-10, -89, 28, 18], [-14, -74, 40, 42], [-14, -31, 40, 32]]]],
@@ -112,6 +112,10 @@ export class Ryu extends Fighter {
             ['hit-stomach-3', [[[544, 2167, 68, 79], [40, 81]], PushBox.IDLE, [[-17, 82, 28, 18], [-41, -59, 38, 30], [-34, -34, 42, 34]]]],
             ['hit-stomach-4', [[[170, 2043, 67, 91], [35, 88]], PushBox.IDLE, [[-28, -67, 28, 18], [-41, -59, 38, 30], [-40, -34, 42, 34]]]],
 
+            // Hit Crouch
+            ['hit-crouch-1', [[[14, 2175, 65, 65], [34, 64]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['hit-crouch-2', [[[88, 2176, 67, 65], [42, 64]], PushBox.CROUCH, HurtBox.CROUCH]],
+
             // Stunned
             ['stun-1', [[[7, 2046, 77, 88], [28, 85]], PushBox.IDLE, [[8, -87, 28, 18], [-16, -75, 40, 46], [-26, -31, 40, 32]]]],
             ['stun-2', [[[93, 2044, 65, 90], [28, 87]], PushBox.IDLE, [[-9, -89, 28, 18], [-23, -75, 40, 46], [-26, -31, 40, 32]]]],
@@ -127,14 +131,18 @@ export class Ryu extends Fighter {
             ['upright-block-1', [[[75, 14, 60, 89], [34, 86]], PushBox.IDLE, HurtBox.IDLE]],
             ['upright-block-2', [[[9, 365, 64, 91], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
 
+            // Crouch Block
+            ['crouch-block-1', [[[507, 398, 69, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-block-2', [[[247, 584, 64, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+
             // Crouch Light Punch
             ['crouch-light-punch-1', [[[507, 398, 69, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
             ['crouch-light-punch-2', [[[590, 400, 95, 60], [31, 57]], PushBox.CROUCH, HurtBox.CROUCH, [13, -50, 51, 18]]],
 
             // Crouch Medium Punch
-            ['crouch-medium-punch-1', [[[318, 586, 66, 62], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
-            ['crouch-medium-punch-2', [[[394, 585, 92, 63], [31, 60]], PushBox.CROUCH, HurtBox.CROUCH, [13, -50, 51, 18]]],
-            ['crouch-medium-punch-3', [[[247, 584, 64, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-medium-punch-1', [[[247, 584, 64, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-medium-punch-2', [[[318, 586, 66, 62], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-medium-punch-3', [[[394, 585, 92, 63], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH, [13, -50, 51, 18]]],
 
             // Crouch Heavy Punch
             ['crouch-heavy-punch-1', [[[11, 834, 60, 72], [28, 69]], PushBox.CROUCH, HurtBox.CROUCH]],
@@ -306,6 +314,18 @@ export class Ryu extends Fighter {
                 ['hit-stomach-2', FIGHTER_HURT_DELAY], ['hit-stomach-2', 3], ['hit-stomach-3', 4],
                 ['hit-stomach-4', 4], ['stun-3', 9], ['stun-3', FrameDelay.TRANSITION],
             ],
+            [FighterState.HURT_CROUCH_LIGHT]: [
+                ['hit-crouch-1', FIGHTER_HURT_DELAY], ['hit-crouch-1', 11],
+                ['hit-crouch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_CROUCH_MEDIUM]: [
+                ['hit-crouch-1', FIGHTER_HURT_DELAY], ['hit-crouch-1', 7],
+                ['hit-crouch-2', 9], ['hit-crouch-2', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_CROUCH_HEAVY]: [
+                ['hit-crouch-1', FIGHTER_HURT_DELAY], ['hit-crouch-1', 7],
+                ['hit-crouch-2', 17], ['hit-crouch-2', FrameDelay.TRANSITION],
+            ],
             [FighterState.SPECIAL_1]: [
                 ['special-1', 2], ['special-2', 8], ['special-3', 2], ['special-4', 40],
                 ['special-4', FrameDelay.TRANSITION],
@@ -314,13 +334,18 @@ export class Ryu extends Fighter {
                 ['upright-block-1', 3], ['upright-block-2', 3],
                 ['upright-block-2', FrameDelay.FREEZE],
             ],
+            [FighterState.CROUCH_BLOCK]: [
+                ['crouch-block-1', 3], ['crouch-block-2', 3],
+                ['crouch-block-2', FrameDelay.FREEZE],
+            ],
             [FighterState.CROUCH_LIGHT_PUNCH]: [
                 ['crouch-light-punch-1', 4], ['crouch-light-punch-2', 4],
                 ['crouch-light-punch-1', 6], ['crouch-light-punch-1', FrameDelay.TRANSITION],
             ],
             [FighterState.CROUCH_MEDIUM_PUNCH]: [
-                ['crouch-medium-punch-1', 4], ['crouch-medium-punch-2', 4],
-                ['crouch-medium-punch-1', 4], ['crouch-medium-punch-3', 6], ['crouch-medium-punch-3', FrameDelay.TRANSITION],
+                ['crouch-medium-punch-1', 2], ['crouch-medium-punch-2', 2], ['crouch-medium-punch-3', 4],
+                ['crouch-medium-punch-2', 3], ['crouch-medium-punch-1', 3], ['crouch-medium-punch-1', 4],
+                ['crouch-3', 1], ['crouch-3', FrameDelay.TRANSITION],
             ],
             [FighterState.CROUCH_HEAVY_PUNCH]: [
                 ['crouch-heavy-punch-1', 4], ['crouch-heavy-punch-2', 6],

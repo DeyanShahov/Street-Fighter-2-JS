@@ -138,7 +138,7 @@ export class Fighter {
                 validFrom: [
                     FighterState.JUMP_UP, FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD,
                     FighterState.JUMP_UP_ALL_PUNCH, FighterState.JUMP_MOVEMENT_HEAVY_PUNCH,
-                    FighterState.JUMP_MOVEMENT_LIGHT_PUNCH, FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH, 
+                    FighterState.JUMP_MOVEMENT_LIGHT_PUNCH, FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH,
                     FighterState.JUMP_UP_LIGHT_KICK, FighterState.JUMP_UP_MEDIUM_KICK, FighterState.JUMP_UP_HEAVY_KICK,
                     FighterState.JUMP_MOVEMENT_LIGHT_KICK, FighterState.JUMP_MOVEMENT_MEDIUM_KICK, FighterState.JUMP_MOVEMENT_HEAVY_KICK,
                 ],
@@ -150,6 +150,8 @@ export class Fighter {
                     FighterState.CROUCH_DOWN, FighterState.CROUCH_TURN,
                     FighterState.CROUCH_LIGHT_PUNCH, FighterState.CROUCH_MEDIUM_PUNCH, FighterState.CROUCH_HEAVY_PUNCH,
                     FighterState.CROUCH_LIGHT_KICK, FighterState.CROUCH_MEDIUM_KICK, FighterState.CROUCH_HEAVY_KICK,
+                    FighterState.HURT_CROUCH_LIGHT, FighterState.HURT_CROUCH_MEDIUM, FighterState.HURT_CROUCH_HEAVY,
+                    FighterState.CROUCH_BLOCK,
                 ],
             },
             [FighterState.CROUCH_DOWN]: {
@@ -247,10 +249,36 @@ export class Fighter {
                 update: this.handleHurtState.bind(this),
                 validFrom: HurtStateValidForm,
             },
+            [FighterState.HURT_CROUCH_LIGHT]: {
+                init: this.handleHurtInit.bind(this),
+                update: this.handleCrouchHurtState.bind(this),
+                validFrom: [FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP,
+                    FighterState.CROUCH_TURN, FighterState.CROUCH_BLOCK,
+                ],
+            },
+            [FighterState.HURT_CROUCH_MEDIUM]: {
+                init: this.handleHurtInit.bind(this),
+                update: this.handleCrouchHurtState.bind(this),
+                validFrom: [FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP,
+                    FighterState.CROUCH_TURN, FighterState.CROUCH_BLOCK
+                ],
+            },
+            [FighterState.HURT_CROUCH_HEAVY]: {
+                init: this.handleHurtInit.bind(this),
+                update: this.handleCrouchHurtState.bind(this),
+                validFrom: [FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP,
+                    FighterState.CROUCH_TURN, FighterState.CROUCH_BLOCK
+                ],
+            },
             [FighterState.UPRIGHT_BLOCK]: {
                 init: this.handleUprightBlockInit.bind(this),
                 update: this.handleUprightBlockState.bind(this),
-                validFrom: [FighterState.WALK_BACKWARD],
+                validFrom: [FighterState.WALK_BACKWARD, FighterState.UPRIGHT_BLOCK],
+            },
+            [FighterState.CROUCH_BLOCK]: {
+                init: this.handleUprightBlockInit.bind(this),
+                update: this.handleCrouchBlockState.bind(this),
+                validFrom: [FighterState.CROUCH, FighterState.CROUCH_BLOCK],
             },
             [FighterState.CROUCH_LIGHT_PUNCH]: {
                 attackType: FighterAttackType.PUNCH,
@@ -410,17 +438,39 @@ export class Fighter {
         return this.direction;
     }
 
+    checkForCrouchState() {
+        return [FighterState.CROUCH, FighterState.CROUCH_UP, FighterState.CROUCH_DOWN,
+            FighterState.CROUCH_BLOCK, FighterState.CROUCH_LIGHT_PUNCH, FighterState.CROUCH_MEDIUM_PUNCH,
+            FighterState.CROUCH_HEAVY_PUNCH, FighterState.CROUCH_LIGHT_KICK, FighterState.CROUCH_MEDIUM_KICK,
+            FighterState.CROUCH_HEAVY_KICK,
+        ].includes(this.currentState);
+    }
+
     getHitState(attackStrength, hitLocation) {
+        const isItCrouching = this.checkForCrouchState();
+
         switch (attackStrength) {
             case FighterAttackStrength.LIGHT:
-                if (hitLocation === FighterHurtBox.HEAD) return FighterState.HURT_HEAD_LIGHT;
-                return FighterState.HURT_BODY_LIGHT;
+                if (isItCrouching) {
+                    return FighterState.HURT_CROUCH_LIGHT;
+                } else {
+                    if (hitLocation === FighterHurtBox.HEAD) return FighterState.HURT_HEAD_LIGHT;
+                    return FighterState.HURT_BODY_LIGHT;
+                }
             case FighterAttackStrength.MEDIUM:
-                if (hitLocation === FighterHurtBox.HEAD) return FighterState.HURT_HEAD_MEDIUM;
-                return FighterState.HURT_BODY_MEDIUM;
+                if (isItCrouching) {
+                    return FighterState.HURT_CROUCH_MEDIUM;
+                } else {
+                    if (hitLocation === FighterHurtBox.HEAD) return FighterState.HURT_HEAD_MEDIUM;
+                    return FighterState.HURT_BODY_MEDIUM;
+                }
             case FighterAttackStrength.HEAVY:
-                if (hitLocation === FighterHurtBox.HEAD) return FighterState.HURT_HEAD_HEAVY;
-                return FighterState.HURT_BODY_HEAVY;
+                if (isItCrouching) {
+                    return FighterState.HURT_CROUCH_HEAVY;
+                } else {
+                    if (hitLocation === FighterHurtBox.HEAD) return FighterState.HURT_HEAD_HEAVY;
+                    return FighterState.HURT_BODY_HEAVY;
+                }
         }
     }
 
@@ -484,6 +534,13 @@ export class Fighter {
                 this.changeState(FighterState.IDLE, time);
             }
         }
+    }
+
+    handleCrouchBlockState(time) {
+        if (!control.isControlDown(this.playerId, Control.LIGHT_PUNCH)
+            && !control.isBackward(this.playerId, this.direction)) {
+                this.changeState(FighterState.CROUCH, time);
+        }    
     }
 
 
@@ -567,28 +624,28 @@ export class Fighter {
 
         if (control.isLightPunch(this.playerId)) {
             this.currentState === FighterState.JUMP_UP
-            ? this.changeState(FighterState.JUMP_UP_ALL_PUNCH, time)
-            : this.changeState(FighterState.JUMP_MOVEMENT_LIGHT_PUNCH);
+                ? this.changeState(FighterState.JUMP_UP_ALL_PUNCH, time)
+                : this.changeState(FighterState.JUMP_MOVEMENT_LIGHT_PUNCH);
         } else if (control.isMediumPunch(this.playerId)) {
             this.currentState === FighterState.JUMP_UP
-            ? this.changeState(FighterState.JUMP_UP_ALL_PUNCH, time)
-            : this.changeState(FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH);
-        } else if ( control.isHeavyPunch(this.playerId)) {
+                ? this.changeState(FighterState.JUMP_UP_ALL_PUNCH, time)
+                : this.changeState(FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH);
+        } else if (control.isHeavyPunch(this.playerId)) {
             this.currentState === FighterState.JUMP_UP
-            ? this.changeState(FighterState.JUMP_UP_ALL_PUNCH, time)
-            : this.changeState(FighterState.JUMP_MOVEMENT_HEAVY_PUNCH);
+                ? this.changeState(FighterState.JUMP_UP_ALL_PUNCH, time)
+                : this.changeState(FighterState.JUMP_MOVEMENT_HEAVY_PUNCH);
         } else if (control.isLightKick(this.playerId)) {
             this.currentState === FighterState.JUMP_UP
-            ? this.changeState(FighterState.JUMP_UP_LIGHT_KICK, time)
-            : this.changeState(FighterState.JUMP_MOVEMENT_LIGHT_KICK);
+                ? this.changeState(FighterState.JUMP_UP_LIGHT_KICK, time)
+                : this.changeState(FighterState.JUMP_MOVEMENT_LIGHT_KICK);
         } else if (control.isMediumKick(this.playerId)) {
             this.currentState === FighterState.JUMP_UP
-            ? this.changeState(FighterState.JUMP_UP_MEDIUM_KICK, time)
-            : this.changeState(FighterState.JUMP_MOVEMENT_MEDIUM_KICK);
+                ? this.changeState(FighterState.JUMP_UP_MEDIUM_KICK, time)
+                : this.changeState(FighterState.JUMP_MOVEMENT_MEDIUM_KICK);
         } else if (control.isHeavyKick(this.playerId)) {
             this.currentState === FighterState.JUMP_UP
-            ? this.changeState(FighterState.JUMP_UP_HEAVY_KICK, time)
-            : this.changeState(FighterState.JUMP_MOVEMENT_HEAVY_KICK);
+                ? this.changeState(FighterState.JUMP_UP_HEAVY_KICK, time)
+                : this.changeState(FighterState.JUMP_MOVEMENT_HEAVY_KICK);
         }
     }
 
@@ -720,7 +777,13 @@ export class Fighter {
     }
 
 
-    handleCrouchState(time) {
+    handleCrouchState(time) {   
+        if (this.opponent.isInAttack
+            && this.checkDistanceForBlock()
+            && control.isBackward(this.playerId, this.direction) ) {
+            this.changeState(FighterState.CROUCH_BLOCK, time);
+        }
+
         if (!control.isDown(this.playerId)) this.changeState(FighterState.CROUCH_UP, time);
 
         if (control.isLightPunch(this.playerId)) {
@@ -814,7 +877,7 @@ export class Fighter {
                 this.changeState(FighterState.JUMP_LAND, time);
                 this.handleResteAttackState();
             }
-        }       
+        }
     }
 
 
@@ -856,10 +919,36 @@ export class Fighter {
         this.changeState(FighterState.IDLE, time);
     }
 
+    handleCrouchHurtState(time) {
+        if (!this.isAnimationCompleted()) return;
+        this.hurtShake = 0;
+        this.hurtShakeTimer = 0;
+        this.hurtBy = undefined;
+        this.changeState(FighterState.CROUCH, time);
+    }
+
+    compareHurtLocationkAndBlockStyle(hurtLocation) {
+        switch (this.currentState) {
+            case FighterState.UPRIGHT_BLOCK:
+                if (hurtLocation === FighterHurtBox.HEAD || hurtLocation === FighterHurtBox.BODY) return true;
+                return false;
+            case FighterState.CROUCH_BLOCK:
+                if (hurtLocation === FighterHurtBox.BODY || hurtLocation === FighterHurtBox.FEET) return true;
+                return false;
+            default:
+                return false;
+        }
+    }
+
     handleAttackHit(time, attackStrength, attackType, hitPosition, hurtLocation, hurtBy) {
-        const isHitBlocked = this.currentState === FighterState.UPRIGHT_BLOCK;
+        console.log(`Attack strenth: ${attackStrength} / Attack type: ${attackType} /
+            Hit Position: ${hitPosition} / Hurt location: ${hurtLocation} / Hurt By: ${hurtBy}`);
+
+        const isHitBlocked = this.compareHurtLocationkAndBlockStyle(hurtLocation);
+
         // Check for new state - Blocked or Hit 
-        const newState = isHitBlocked ? FighterState.UPRIGHT_BLOCK : this.getHitState(attackStrength, hurtLocation);
+        const newState = isHitBlocked ? this.currentState : this.getHitState(attackStrength, hurtLocation);
+        console.log(newState);
 
         const { velocity, friction } = FighterAttackBasaData[attackStrength].slide;
 

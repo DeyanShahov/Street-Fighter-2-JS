@@ -112,6 +112,10 @@ export class Ken extends Fighter {
             ['hit-stomach-3', [[[704, 4194, 71, 78], [40, 81]], PushBox.IDLE, [[-17, 82, 28, 18], [-41, -59, 38, 30], [-34, -34, 42, 34]]]],
             ['hit-stomach-4', [[[618, 4200, 75, 72], [50, 69]], PushBox.IDLE, [[-28, -67, 28, 18], [-41, -59, 38, 30], [-40, -34, 42, 34]]]],
 
+            // Hit Crouch
+            ['hit-crouch-1', [[[864, 4378, 65, 64], [35, 62]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['hit-crouch-2', [[[776, 4378, 68, 65], [42, 62]], PushBox.CROUCH, HurtBox.CROUCH]],
+
             // Stunned
             ['stun-1', [[[857, 4456, 67, 90], [28, 85]], PushBox.IDLE, [[8, -87, 28, 18], [-16, -75, 40, 46], [-26, -31, 40, 32]]]],
             ['stun-2', [[[783, 4457, 65, 89], [28, 87]], PushBox.IDLE, [[-9, -89, 28, 18], [-23, -75, 40, 46], [-26, -31, 40, 32]]]],
@@ -127,6 +131,10 @@ export class Ken extends Fighter {
             // Upright Block
             ['upright-block-1', [[[873, 4018, 63, 92], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
             ['upright-block-2', [[[804, 4017, 64, 93], [32, 88]], PushBox.IDLE, HurtBox.IDLE]],
+
+            // Crouch Block
+            ['crouch-block-1', [[[870, 4115, 55, 61], [29, 58]], PushBox.CROUCH, HurtBox.CROUCH]],
+            ['crouch-block-2', [[[796, 4112, 58, 64], [29, 62]], PushBox.CROUCH, HurtBox.CROUCH]],
 
             // Crouch Light Punch
             ['crouch-light-punch-1', [[[868, 1947, 69, 61], [31, 59]], PushBox.CROUCH, HurtBox.CROUCH]],
@@ -306,6 +314,18 @@ export class Ken extends Fighter {
                 ['hit-stomach-2', FIGHTER_HURT_DELAY], ['hit-stomach-2', 3], ['hit-stomach-3', 4],
                 ['hit-stomach-4', 4], ['stun-3', 9], ['stun-3', FrameDelay.TRANSITION],
             ],
+            [FighterState.HURT_CROUCH_LIGHT]: [
+                ['hit-crouch-1', FIGHTER_HURT_DELAY], ['hit-crouch-1', 11],
+                ['hit-crouch-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_CROUCH_MEDIUM]: [
+                ['hit-crouch-1', FIGHTER_HURT_DELAY], ['hit-crouch-1', 7],
+                ['hit-crouch-2', 9], ['hit-crouch-2', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_CROUCH_HEAVY]: [
+                ['hit-crouch-1', FIGHTER_HURT_DELAY], ['hit-crouch-1', 7],
+                ['hit-crouch-2', 17], ['hit-crouch-2', FrameDelay.TRANSITION],
+            ],
             [FighterState.SPECIAL_1]: [
                 ['special-1', 2], ['special-2', 8], ['special-3', 2], ['special-4', 40],
                 ['special-4', FrameDelay.TRANSITION],
@@ -313,6 +333,10 @@ export class Ken extends Fighter {
             [FighterState.UPRIGHT_BLOCK]: [
                 ['upright-block-1', 3], ['upright-block-2', 3],
                 ['upright-block-2', FrameDelay.FREEZE],
+            ],
+            [FighterState.CROUCH_BLOCK]: [
+                ['crouch-block-1', 3], ['crouch-block-2', 3],
+                ['crouch-block-2', FrameDelay.FREEZE],
             ],
             [FighterState.CROUCH_LIGHT_PUNCH]: [
                 ['crouch-light-punch-1', 4], ['crouch-light-punch-2', 4],

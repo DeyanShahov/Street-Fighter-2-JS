@@ -129,8 +129,12 @@ export const FighterState = {
     HURT_BODY_LIGHT: 'hurt-body-light',
     HURT_BODY_MEDIUM: 'hurt-body-medium',
     HURT_BODY_HEAVY: 'hurt-body-heavy',
+    HURT_CROUCH_LIGHT: 'hurt-crouch-light',
+    HURT_CROUCH_MEDIUM: 'hurt-crouch-medium',
+    HURT_CROUCH_HEAVY: 'hurt-crouch-heavy',
     SPECIAL_1: 'special-1',
     UPRIGHT_BLOCK: 'upright-block',
+    CROUCH_BLOCK: 'crouch_block',
 };
 
 export const SpecialMoveDirection = {
@@ -179,5 +183,11 @@ export const HurtStateValidForm = [
     FighterState.LIGHT_KICK, FighterState.MEDIUM_KICK, FighterState.HEAVY_KICK, 
     FighterState.HURT_HEAD_LIGHT, FighterState.HURT_HEAD_MEDIUM, FighterState.HURT_HEAD_HEAVY,
     FighterState.HURT_BODY_LIGHT, FighterState.HURT_BODY_MEDIUM, FighterState.HURT_BODY_HEAVY, 
-    FighterState.SPECIAL_1, FighterState.CROUCH_LIGHT_PUNCH,
+    FighterState.SPECIAL_1, FighterState.UPRIGHT_BLOCK, FighterState.CROUCH_BLOCK, 
+    FighterState.CROUCH_LIGHT_PUNCH, FighterState.CROUCH_MEDIUM_PUNCH, FighterState.CROUCH_HEAVY_PUNCH,
+    FighterState.CROUCH_LIGHT_KICK, FighterState.CROUCH_MEDIUM_KICK, FighterState.CROUCH_HEAVY_KICK,
+    FighterState.JUMP_UP_ALL_PUNCH, 
+    FighterState.JUMP_UP_LIGHT_KICK, FighterState.JUMP_UP_MEDIUM_KICK, FighterState.JUMP_UP_HEAVY_KICK,
+    FighterState.JUMP_MOVEMENT_LIGHT_PUNCH, FighterState.JUMP_MOVEMENT_MEDIUM_PUNCH, FighterState.JUMP_MOVEMENT_HEAVY_PUNCH,
+    FighterState.JUMP_MOVEMENT_LIGHT_KICK, FighterState.JUMP_MOVEMENT_MEDIUM_KICK, FighterState.JUMP_MOVEMENT_HEAVY_KICK,
 ];
